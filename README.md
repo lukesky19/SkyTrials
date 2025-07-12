@@ -1,13 +1,14 @@
 # SkyTrials
 ## Description
-* A mob arena plugin inspired by the Minecraft 1.21 Trial Chambers using Trial Spawners and Vault blocks.
+* A plugin that offers different challenges or trials to tackle. Inspired by the Minecraft Trial Chambers and mob arenas.
 
 ## Features
-* Trial time limits.
-* Per-player cooldowns for trials.
-* Place Trial Spawners with configurable entities and loot tables.
-* Place Vault blocks with custom loot tables.
-* Normal and Ominous variants of Trial Spawners and Vault blocks supported.
+* Optional trial time limits.
+* Trial Chamber-style trial where trial spawners and vault blocks are placed.
+* Level-style trial where players fight waves of enemies.
+* Highly configurable.
+* Optional cooldowns for when trials end.
+* Optional grace periods for when a player logs out while in a trial.
 
 ## Dependencies
 * WorldGuard
@@ -15,25 +16,26 @@
 
 ## Issues, Bugs, or Suggestions
 * Please create a new [GitHub Issue](https://github.com/lukesky19/SkyTrials/issues) with your issue, bug, or suggestion.
-* If an issue or bug, please post any relevant logs containing errors related to SkyWelcome and your configuration files.
+* If an issue or bug, please post any relevant logs containing errors related to SkyTrials and your configuration files.
 * I will attempt to solve any issues or implement features to the best of my ability.
 
 ## FAQ
 Q: What versions does this plugin support?
 
-A: 1.21.1, 1.21.3, and 1.21.4
+A: 1.21.4, 1.21.5, 1.21.6, and 1.21.7.
 
 Q: Are there any plans to support any other versions?
 
-A: I will always support newer versions of the game. I have no plans to support any version older than 1.21.1 at this time.
+A: I will always do my best to support the latest versions of the game. I will sometimes support other versions until I no longer use them.
 
-Q: Does this work on Spigot and Paper?
+Q: Does this work on Spigot? Paper? (Insert other server software here)?
 
-A: This plugin only works with Paper, it makes use of many newer API features that don't exist in the Spigot API. There are no plans to support Spigot.
+A: I only support Paper, but this will likely also work on forks of Paper (untested). There are no plans to support any other server software (i.e., Spigot or Folia).
 
-Q: Is Folia supported?
-
-A: There is no Folia support at this time. I may look into it in the future though.
+## Future Plans
+* Add trial modifiers.
+  * These will be player-selectable, but the modifiers can be configured per-trial.
+* Add more trial types.
 
 ## For Server Admins/Owners
 * Download the plugin [SkyLib](https://github.com/lukesky19/SkyLib/releases).
