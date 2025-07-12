@@ -1,24 +1,41 @@
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.5"
+    `maven-publish`
 }
 
-allprojects {
-    apply(plugin = "java")
-    apply(plugin = "java-library")
+group = "com.github.lukesky19"
+version = "2.0.0.0"
 
-    group = "com.github.lukesky19"
-    version = "1.1.0"
-
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+repositories {
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        name = "papermc-repo"
     }
-
-    tasks.withType<JavaCompile> {
-        options.encoding = "UTF-8"
+    maven("https://oss.sonatype.org/content/groups/public/") {
+        name = "sonatype"
     }
+    maven("https://jitpack.io") {
+        name = "jitpack"
+    }
+    maven("https://maven.enginehub.org/repo/") {
+        name = "EngineHub"
+    }
+    mavenLocal()
+}
 
-    tasks.processResources {
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.14-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15-SNAPSHOT")
+    compileOnly("com.github.lukesky19:SkyLib:1.3.0.0")
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+tasks {
+    processResources {
         val props = mapOf("version" to version)
         inputs.properties(props)
         filteringCharset = "UTF-8"
@@ -27,35 +44,23 @@ allprojects {
         }
     }
 
-    tasks.jar {
+    jar {
         manifest {
             attributes["paperweight-mappings-namespace"] = "mojang"
         }
+        archiveClassifier.set("")
     }
 
-    repositories {
-        mavenCentral()
-        mavenLocal()
-
-        maven("https://repo.papermc.io/repository/maven-public/")
-        maven("https://oss.sonatype.org/content/groups/public/")
-        maven("https://maven.enginehub.org/repo/")
+    build {
+        dependsOn(publishToMavenLocal)
+        dependsOn(javadoc)
     }
 }
 
-dependencies {
-    implementation(project(":Core")) // 1.21.4
-    implementation(project(":1_21_3"))
-    implementation(project(":1_21_1"))
-}
-
-tasks.shadowJar {
-    archiveClassifier.set("")
-    manifest {
-        attributes["paperweight-mappings-namespace"] = "mojang"
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
     }
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
 }
