@@ -1,60 +1,66 @@
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.1"
-    id("io.papermc.paperweight.userdev") version "1.7.3"
+    `maven-publish`
 }
 
 group = "com.github.lukesky19"
-version = "1.0.0"
+version = "2.0.0.0"
 
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://maven.enginehub.org/repo/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        name = "papermc-repo"
+    }
+    maven("https://oss.sonatype.org/content/groups/public/") {
+        name = "sonatype"
+    }
+    maven("https://jitpack.io") {
+        name = "jitpack"
+    }
+    maven("https://maven.enginehub.org/repo/") {
+        name = "EngineHub"
+    }
+    mavenLocal()
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.11-SNAPSHOT")
-    compileOnly("net.kyori:adventure-api:4.17.0")
-    compileOnly("net.kyori:adventure-text-minimessage:4.17.0")
-    compileOnly("me.clip:placeholderapi:2.11.6")
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
-    implementation("org.spongepowered:configurate-yaml:4.1.2")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.14-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15-SNAPSHOT")
+    compileOnly("com.github.lukesky19:SkyLib:1.3.0.0")
 }
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
-tasks.processResources {
-    val props = mapOf("version" to version)
-    inputs.properties(props)
-    filteringCharset = "UTF-8"
-    filesMatching("plugin.yml") {
-        expand(props)
-    }
-}
-
-tasks.shadowJar {
-    manifest {
-        attributes["paperweight-mappings-namespace"] = "mojang"
-    }
-    archiveClassifier.set("")
-    relocate("org.spongepowered.configurate", "com.github.lukesky19.skytrials.libs.configurate")
-    minimize()
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
-}
-
 tasks {
-    withType<JavaCompile> {
-        options.compilerArgs.add("-Xlint:deprecation")
+    processResources {
+        val props = mapOf("version" to version)
+        inputs.properties(props)
+        filteringCharset = "UTF-8"
+        filesMatching("plugin.yml") {
+            expand(props)
+        }
+    }
+
+    jar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
+        archiveClassifier.set("")
+    }
+
+    build {
+        dependsOn(publishToMavenLocal)
+        dependsOn(javadoc)
     }
 }
 
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}

@@ -1,6 +1,6 @@
 /*
-    SkyTrials is a mob arena plugin inspired by the Minecraft 1.21 Trial Chambers using Trial Spawners and Vault blocks.
-    Copyright (C) 2024  lukeskywlker19
+    SkyTrials is a plugin that offers different challenges or trials to tackle. Inspired by the Minecraft Trial Chambers and mob arenas.
+    Copyright (C) 2024 lukeskywlker19
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,20 +17,41 @@
 */
 package com.github.lukesky19.skytrials.listener;
 
-import com.github.lukesky19.skytrials.manager.TrialManager;
+import com.github.lukesky19.skytrials.manager.trial.TrialManager;
+import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
+/**
+ * Listens for when a player disconnects from the server and passes the event to the trial the player is in.
+ */
 public class LogoutListener implements Listener {
-    private final TrialManager trialManager;
+    private final @NotNull TrialManager trialManager;
 
-    public LogoutListener(TrialManager trialManager) {
+    /**
+     * Constructor
+     * @param trialManager A {@link TrialManager} instance.
+     */
+    public LogoutListener(@NotNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        trialManager.handlePlayerLogOut(event.getPlayer());
+    /**
+     * Listens to a {@link PlayerQuitEvent} and passes the event to any trial the player is in.
+     * @param playerQuitEvent A {@link PlayerQuitEvent}.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onQuit(PlayerQuitEvent playerQuitEvent) {
+        UUID uuid = playerQuitEvent.getPlayer().getUniqueId();
+
+        AbstractTrial trial = trialManager.getTrialByPlayerUUID(uuid);
+        if(trial != null) {
+            trial.handlePlayerQuitEvent(playerQuitEvent);
+        }
     }
 }

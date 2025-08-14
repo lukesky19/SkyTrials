@@ -23,34 +23,37 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
- * This class listens for when a player joins the server and passes the event to any trials their join location is on.
+ * This class listens to when a player dies in a trial and passing the event to the trial.
  */
-public class LoginListener implements Listener {
+public class PlayerDeathListener implements Listener {
     private final @NotNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public LoginListener(@NotNull TrialManager trialManager) {
+    public PlayerDeathListener(@NotNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 
     /**
-     * Listen to the join event and pass the event to any trial the player's location is in.
-     * @param playerJoinEvent A {@link PlayerJoinEvent}
+     * Listens to {@link PlayerDeathEvent}s and passes the event to the trial the player is in (if any).
+     * @param playerDeathEvent A {@link PlayerDeathEvent}.
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onJoin(PlayerJoinEvent playerJoinEvent) {
-        Player player = playerJoinEvent.getPlayer();
+    public void onDeath(PlayerDeathEvent playerDeathEvent) {
+        Player player = playerDeathEvent.getPlayer();
+        UUID uuid = player.getUniqueId();
 
-        AbstractTrial trial = trialManager.getTrialByLocation(player.getLocation());
+        AbstractTrial trial = trialManager.getTrialByPlayerUUID(uuid);
         if(trial != null) {
-            trial.handlePlayerJoinEvent(playerJoinEvent);
+            trial.handlePlayerDeath(playerDeathEvent);
         }
     }
 }

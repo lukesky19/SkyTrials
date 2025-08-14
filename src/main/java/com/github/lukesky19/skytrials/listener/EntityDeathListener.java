@@ -17,40 +17,40 @@
 */
 package com.github.lukesky19.skytrials.listener;
 
-import com.github.lukesky19.skytrials.manager.trial.TrialManager;
 import com.github.lukesky19.skytrials.trial.AbstractTrial;
-import org.bukkit.entity.Player;
+import com.github.lukesky19.skytrials.manager.trial.TrialManager;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class listens for when a player joins the server and passes the event to any trials their join location is on.
+ * Handles when an entity dies in a trial and passes the event to the trial.
  */
-public class LoginListener implements Listener {
+public class EntityDeathListener implements Listener {
     private final @NotNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public LoginListener(@NotNull TrialManager trialManager) {
+    public EntityDeathListener(@NotNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 
     /**
-     * Listen to the join event and pass the event to any trial the player's location is in.
-     * @param playerJoinEvent A {@link PlayerJoinEvent}
+     * When an entity dies, check if the location was in a trial and pass the event to the trial if necessary.
+     * @param entityDeathEvent An {@link EntityDeathEvent}.
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onJoin(PlayerJoinEvent playerJoinEvent) {
-        Player player = playerJoinEvent.getPlayer();
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityDeath(EntityDeathEvent entityDeathEvent) {
+        Entity killedEntity = entityDeathEvent.getEntity();
 
-        AbstractTrial trial = trialManager.getTrialByLocation(player.getLocation());
+        AbstractTrial trial = trialManager.getTrialByLocation(killedEntity.getLocation());
         if(trial != null) {
-            trial.handlePlayerJoinEvent(playerJoinEvent);
+            trial.handleEntityDeath(entityDeathEvent);
         }
     }
 }

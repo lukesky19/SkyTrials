@@ -4,13 +4,12 @@ main: com.github.lukesky19.skytrials.SkyTrials
 api-version: '1.21'
 authors: [ lukeskywlker19 ]
 depend:
-  - WorldGuard
-  - PlaceholderAPI
+    - SkyLib
+    - WorldGuard
+softdepend:
+  - Multiverse-Core
 load: POSTWORLD
 
-commands:
-  skytrials:
-    description: The base command.
 permissions:
   skytrials.command.skytrials:
     description: The base command permission.
