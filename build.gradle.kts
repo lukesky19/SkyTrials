@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.14-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15-SNAPSHOT")
     compileOnly("com.github.lukesky19:SkyLib:1.3.0.0")
