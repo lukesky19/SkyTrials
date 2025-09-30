@@ -20,9 +20,6 @@ package com.github.lukesky19.skytrials;
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
 import com.github.lukesky19.skylib.api.version.VersionUtil;
 import com.github.lukesky19.skytrials.command.SkyTrialsCommand;
-import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
-import com.github.lukesky19.skytrials.manager.settings.SettingsManager;
-import com.github.lukesky19.skytrials.manager.trial.TrialConfigManager;
 import com.github.lukesky19.skytrials.database.ConnectionManager;
 import com.github.lukesky19.skytrials.database.DatabaseManager;
 import com.github.lukesky19.skytrials.database.QueueManager;
@@ -30,10 +27,13 @@ import com.github.lukesky19.skytrials.listener.*;
 import com.github.lukesky19.skytrials.manager.blocks.SpawnerManager;
 import com.github.lukesky19.skytrials.manager.blocks.VaultManager;
 import com.github.lukesky19.skytrials.manager.entity.EntityManager;
+import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.manager.player.CooldownManager;
 import com.github.lukesky19.skytrials.manager.player.GracePeriodManager;
 import com.github.lukesky19.skytrials.manager.player.PlayerDataManager;
+import com.github.lukesky19.skytrials.manager.settings.SettingsManager;
 import com.github.lukesky19.skytrials.manager.task.TaskManager;
+import com.github.lukesky19.skytrials.manager.trial.TrialConfigManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialDataManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -178,7 +178,7 @@ public final class SkyTrials extends JavaPlugin {
         int minor = VersionUtil.getMinorVersion();
 
         if(major < 21 && minor < 3) {
-            this.getComponentLogger().error(AdventureUtil.serialize("This plugin currently only supports versions 1.21.4, 1.21.5, 1.21.6, and 1.21.7."));
+            this.getComponentLogger().error(AdventureUtil.serialize("This plugin currently only supports versions 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, and 1.21.9."));
             this.getComponentLogger().error(AdventureUtil.serialize("If a new Minecraft version has released, please check my <click:OPEN_URL:https://github.com/lukesky19>GitHub</click> for updates."));
             this.getServer().getPluginManager().disablePlugin(this);
             return false;
