@@ -17,26 +17,26 @@
 */
 package com.github.lukesky19.skytrials.listener;
 
-import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
+import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Handles when an entity dies in a trial and passes the event to the trial.
  */
 public class EntityDeathListener implements Listener {
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public EntityDeathListener(@NotNull TrialManager trialManager) {
+    public EntityDeathListener(@NonNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 

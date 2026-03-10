@@ -18,8 +18,8 @@
 package com.github.lukesky19.skytrials.command.arguments;
 
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
+import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
 import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -27,7 +27,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -35,15 +35,15 @@ import java.util.UUID;
  * This class creates the leave command argument to leave a trial.
  */
 public class LeaveCommand {
-    private final @NotNull LocaleManager localeManager;
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull LocaleManager localeManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param localeManager A {@link LocaleManager} instance.
      * @param trialManager A {@link TrialManager} instance.
      */
-    public LeaveCommand(@NotNull LocaleManager localeManager, @NotNull TrialManager trialManager) {
+    public LeaveCommand(@NonNull LocaleManager localeManager, @NonNull TrialManager trialManager) {
         this.localeManager = localeManager;
         this.trialManager = trialManager;
     }
@@ -52,7 +52,7 @@ public class LeaveCommand {
      * Creates the leave command argument to leave a trial.
      * @return A {@link LiteralCommandNode} of type {@link CommandSourceStack} for the leave command argument.
      */
-    public @NotNull LiteralCommandNode<CommandSourceStack> createCommand() {
+    public @NonNull LiteralCommandNode<CommandSourceStack> createCommand() {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("leave");
 
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.leave") && ctx.getSender() instanceof Player);
@@ -64,7 +64,7 @@ public class LeaveCommand {
 
             AbstractTrial trial = trialManager.getTrialByPlayerUUID(uuid);
             if(trial == null) {
-                player.sendMessage(AdventureUtil.serialize(player, locale.prefix() + locale.leaveTrialNotInTrial()));
+                player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.leaveTrialNotInTrial()));
                 return 0;
             }
 

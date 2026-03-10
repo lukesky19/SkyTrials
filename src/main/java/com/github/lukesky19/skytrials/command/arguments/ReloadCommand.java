@@ -19,27 +19,27 @@ package com.github.lukesky19.skytrials.command.arguments;
 
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
 import com.github.lukesky19.skytrials.SkyTrials;
-import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
+import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This class creates the reload command argument to reload the plugin.
  */
 public class ReloadCommand {
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull LocaleManager localeManager;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull LocaleManager localeManager;
 
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      * @param localeManager A {@link LocaleManager} instance.
      */
-    public ReloadCommand(@NotNull SkyTrials skyTrials, @NotNull LocaleManager localeManager) {
+    public ReloadCommand(@NonNull SkyTrials skyTrials, @NonNull LocaleManager localeManager) {
         this.skyTrials = skyTrials;
         this.localeManager = localeManager;
     }
@@ -48,7 +48,7 @@ public class ReloadCommand {
      * Creates the reload command argument to reload the plugin.
      * @return A {@link LiteralCommandNode} of type {@link CommandSourceStack} for the reload command argument.
      */
-    public @NotNull LiteralCommandNode<CommandSourceStack> createCommand() {
+    public @NonNull LiteralCommandNode<CommandSourceStack> createCommand() {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("reload");
 
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.reload"));
@@ -58,7 +58,7 @@ public class ReloadCommand {
 
             skyTrials.reload();
 
-            ctx.getSource().getSender().sendMessage(AdventureUtil.serialize(locale.prefix() + locale.reload()));
+            ctx.getSource().getSender().sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.reload()));
 
             return 1;
         });

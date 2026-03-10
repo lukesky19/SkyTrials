@@ -19,7 +19,7 @@ package com.github.lukesky19.skytrials.data.config.entity;
 
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This record contains the configuration to create a potion effect to apply to a player or entity.

@@ -28,7 +28,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +47,7 @@ public abstract class AbstractTrial {
      * @param player The {@link Player} joining the trial.
      * @param uuid The {@link UUID} of the player.
      */
-    public abstract void join(@NotNull Player player, @NotNull UUID uuid);
+    public abstract void join(@NonNull Player player, @NonNull UUID uuid);
 
     /**
      * This handles the starting of a trial.
@@ -59,56 +59,56 @@ public abstract class AbstractTrial {
      * @param player The {@link Player} leaving the trial.
      * @param uuid The {@link UUID} of the player.
      */
-    public abstract void leave(@NotNull Player player, @NotNull UUID uuid);
+    public abstract void leave(@NonNull Player player, @NonNull UUID uuid);
 
     /**
      * Handles when a trial is ended.
      * @param trialEndReason The {@link TrialEndReason} for why the trial is ending.
      */
-    public abstract void end(@NotNull TrialEndReason trialEndReason);
+    public abstract void end(@NonNull TrialEndReason trialEndReason);
 
     /**
      * Handles when a player attempts to toggle their ready status.
      * @param player The {@link Player} toggling their ready status.
      * @param uuid The {@link UUID} of the player.
      */
-    public abstract void togglePlayerStatus(@NotNull Player player, @NotNull UUID uuid);
+    public abstract void togglePlayerStatus(@NonNull Player player, @NonNull UUID uuid);
 
     /**
      * Handles when a player dies inside a trial.
      * @param playerDeathEvent A {@link PlayerDeathEvent}.
      */
-    public abstract void handlePlayerDeath(@NotNull PlayerDeathEvent playerDeathEvent);
+    public abstract void handlePlayerDeath(@NonNull PlayerDeathEvent playerDeathEvent);
 
     /**
      * Handles when an {@link Entity} inside a trial dies.
      * @param entityDeathEvent An {@link EntityDeathEvent}.
      */
-    public abstract void handleEntityDeath(@NotNull EntityDeathEvent entityDeathEvent);
+    public abstract void handleEntityDeath(@NonNull EntityDeathEvent entityDeathEvent);
 
     /**
      * Handles when a player joins the server and is inside a trial.
      * @param playerJoinEvent A {@link PlayerJoinEvent}
      */
-    public abstract void handlePlayerJoinEvent(@NotNull PlayerJoinEvent playerJoinEvent);
+    public abstract void handlePlayerJoinEvent(@NonNull PlayerJoinEvent playerJoinEvent);
 
     /**
      * Handles when a player quits the server while in a trial.
      * @param playerQuitEvent A {@link PlayerQuitEvent}
      */
-    public abstract void handlePlayerQuitEvent(@NotNull PlayerQuitEvent playerQuitEvent);
+    public abstract void handlePlayerQuitEvent(@NonNull PlayerQuitEvent playerQuitEvent);
 
     /**
      * Handles when a spawner spawns an {@link Entity}.
      * @param spawnerSpawnEvent A {@link SpawnerSpawnEvent}.
      */
-    public abstract void handleEntitySpawn(@NotNull SpawnerSpawnEvent spawnerSpawnEvent);
+    public abstract void handleEntitySpawn(@NonNull SpawnerSpawnEvent spawnerSpawnEvent);
 
     /**
      * Handles when a potion effect is applied to an {@link Entity}.
      * @param entityPotionEffectEvent An {@link EntityPotionEffectEvent}.
      */
-    public abstract void handleEntityPotionEffect(@NotNull EntityPotionEffectEvent entityPotionEffectEvent);
+    public abstract void handleEntityPotionEffect(@NonNull EntityPotionEffectEvent entityPotionEffectEvent);
 
     /**
      * Handles the decrementing of the trial's time by one.
@@ -119,25 +119,25 @@ public abstract class AbstractTrial {
      * Get the {@link World} for the trial.
      * @return A {@link World}.
      */
-    public abstract @NotNull World getWorld();
+    public abstract @NonNull World getWorld();
 
     /**
      * Get the {@link ProtectedRegion} for the trial.
      * @return A {@link ProtectedRegion}.
      */
-    public abstract @NotNull ProtectedRegion getRegion();
+    public abstract @NonNull ProtectedRegion getRegion();
 
     /**
      * Get a {@link List} of {@link UUID}s that are inside the trial.
      * @return A {@link List} of {@link UUID}s.
      */
-    public abstract @NotNull List<UUID> getPlayerIds();
+    public abstract @NonNull List<UUID> getPlayerIds();
 
     /**
      * Get a {@link List} of {@link Player}s that are inside the trial.
      * @return A {@link List} of {@link Player}s.
      */
-    public abstract @NotNull List<Player> getPlayers();
+    public abstract @NonNull List<Player> getPlayers();
 
     /**
      * This method can be run to place blocks.

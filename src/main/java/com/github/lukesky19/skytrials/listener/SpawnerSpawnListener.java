@@ -23,19 +23,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This class listens to when a spawner spawns an entity.
  */
 public class SpawnerSpawnListener implements Listener {
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public SpawnerSpawnListener(@NotNull TrialManager trialManager) {
+    public SpawnerSpawnListener(@NonNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 

@@ -21,8 +21,8 @@ import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializ
 import com.github.lukesky19.skytrials.data.config.entity.EntityConfig;
 import com.github.lukesky19.skytrials.data.config.misc.LocationConfig;
 import com.github.lukesky19.skytrials.data.config.misc.LootTableConfig;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -34,9 +34,9 @@ import java.util.List;
  */
 @ConfigSerializable
 public record TrialSpawnerConfig(
-        @NotNull LocationConfig location,
-        @NotNull SpawnerConfig normal,
-        @NotNull SpawnerConfig ominous) {
+        @NonNull LocationConfig location,
+        @NonNull SpawnerConfig normal,
+        @NonNull SpawnerConfig ominous) {
     /**
      * The configuration for the trial spawner.
      * @param simultaneousMobs How many mobs should be spawned at once?
@@ -56,8 +56,8 @@ public record TrialSpawnerConfig(
             @Nullable Integer spawnRange,
             @Nullable Float baseSpawnsBeforeCooldown,
             @Nullable Float additionalSpawnsBeforeCooldown,
-            @NotNull List<SpawnPotential> spawnPotentials,
-            @NotNull List<LootTableConfig> lootTables) {}
+            @NonNull List<SpawnPotential> spawnPotentials,
+            @NonNull List<LootTableConfig> lootTables) {}
     /**
      * This record contains the configuration for an entity the trial spawner may spawn.
      * @param entityConfig The {@link EntityConfig} for the entity.
@@ -65,6 +65,6 @@ public record TrialSpawnerConfig(
      */
     @ConfigSerializable
     public record SpawnPotential(
-            @NotNull EntityConfig entityConfig,
+            @NonNull EntityConfig entityConfig,
             @Nullable Integer weight) {}
 }

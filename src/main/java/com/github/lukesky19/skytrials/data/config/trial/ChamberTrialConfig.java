@@ -25,7 +25,7 @@ import com.github.lukesky19.skytrials.data.config.misc.RegionConfig;
 import com.github.lukesky19.skytrials.data.trial.ChamberTrialData;
 import com.github.lukesky19.skytrials.trial.impl.ChamberTrial;
 import net.kyori.adventure.bossbar.BossBar;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -53,14 +53,14 @@ public record ChamberTrialConfig(
         @Nullable Integer timeLimitSeconds,
         @Nullable Integer cooldownSeconds,
         @Nullable Integer gracePeriodSeconds,
-        @NotNull RegionConfig region,
-        @NotNull LocationConfig joinLocation,
-        @NotNull LocationConfig startLocation,
-        @NotNull LocationConfig endLocation,
-        @NotNull LobbyBossBarConfig lobbyBossBar,
-        @NotNull TrialBossBarConfig trialBossBar,
-        @NotNull List<TrialSpawnerConfig> trialSpawners,
-        @NotNull List<VaultConfig> vaults) {
+        @NonNull RegionConfig region,
+        @NonNull LocationConfig joinLocation,
+        @NonNull LocationConfig startLocation,
+        @NonNull LocationConfig endLocation,
+        @NonNull LobbyBossBarConfig lobbyBossBar,
+        @NonNull TrialBossBarConfig trialBossBar,
+        @NonNull List<TrialSpawnerConfig> trialSpawners,
+        @NonNull List<VaultConfig> vaults) {
     /**
      * The config for the boss bar shown to the player during the trial.
      * @param timeLimitText The boss bar text to show when the trial has a time limit.

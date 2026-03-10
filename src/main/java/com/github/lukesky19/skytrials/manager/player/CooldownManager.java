@@ -27,8 +27,8 @@ import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -39,10 +39,10 @@ import java.util.UUID;
  * This class manages player cooldowns for trials.
  */
 public class CooldownManager {
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull LocaleManager localeManager;
-    private final @NotNull PlayerDataManager playerDataManager;
-    private final @NotNull DatabaseManager databaseManager;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull LocaleManager localeManager;
+    private final @NonNull PlayerDataManager playerDataManager;
+    private final @NonNull DatabaseManager databaseManager;
 
     /**
      * Constructor
@@ -51,7 +51,7 @@ public class CooldownManager {
      * @param playerDataManager A {@link PlayerDataManager} instance.
      * @param databaseManager A {@link DatabaseManager} instance.
      */
-    public CooldownManager(@NotNull SkyTrials skyTrials, @NotNull LocaleManager localeManager, @NotNull PlayerDataManager playerDataManager, @NotNull DatabaseManager databaseManager) {
+    public CooldownManager(@NonNull SkyTrials skyTrials, @NonNull LocaleManager localeManager, @NonNull PlayerDataManager playerDataManager, @NonNull DatabaseManager databaseManager) {
         this.skyTrials = skyTrials;
         this.localeManager = localeManager;
         this.playerDataManager = playerDataManager;
@@ -64,7 +64,7 @@ public class CooldownManager {
      * @param trialId The id of the trial.
      * @param cooldownTimeSeconds The cooldown time in seconds to add.
      */
-    public void addCooldown(@NotNull UUID playerId, @NotNull String trialId, long cooldownTimeSeconds) {
+    public void addCooldown(@NonNull UUID playerId, @NonNull String trialId, long cooldownTimeSeconds) {
         PlayerData playerData = playerDataManager.getPlayerData(playerId);
 
         Map<String, Long> cooldownMap = playerData.getCooldownsMap();
@@ -80,7 +80,7 @@ public class CooldownManager {
      * @param trialId The id of the trial.
      * @return true if a cooldown was removed, otherwise false.
      */
-    public boolean removeCooldown(@NotNull UUID playerId, @NotNull String trialId) {
+    public boolean removeCooldown(@NonNull UUID playerId, @NonNull String trialId) {
         PlayerData playerData = playerDataManager.getPlayerData(playerId);
 
         Map<String, Long> cooldownMap = playerData.getCooldownsMap();
@@ -102,7 +102,7 @@ public class CooldownManager {
      * @param trialId The id of the trial.
      * @return The cooldown time in seconds as a {@link Long} or null.
      */
-    public @Nullable Long getTrialCooldown(@NotNull UUID playerId, @NotNull String trialId) {
+    public @Nullable Long getTrialCooldown(@NonNull UUID playerId, @NonNull String trialId) {
         PlayerData playerData = playerDataManager.getPlayerData(playerId);
 
         return playerData.getCooldownsMap().get(trialId);
@@ -131,7 +131,7 @@ public class CooldownManager {
                     Player player = skyTrials.getServer().getPlayer(uuid);
                     if(player != null && player.isOnline() && player.isConnected()) {
                         List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("trial_id", entry.getKey()));
-                        player.sendMessage(AdventureUtil.serialize(locale.prefix() + locale.cooldownEnded(), placeholders));
+                        player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.cooldownEnded(), placeholders));
                     }
                 } else {
                     cooldownsMap.put(entry.getKey(), newCooldownTime);

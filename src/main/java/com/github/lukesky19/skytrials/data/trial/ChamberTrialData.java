@@ -25,7 +25,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -46,19 +46,19 @@ import java.util.List;
  * @param vaultConfigList A {@link List} of {@link VaultConfig}s for the trial.
  */
 public record ChamberTrialData(
-        @NotNull String trialId,
+        @NonNull String trialId,
         int timeLimitSeconds,
         int cooldownSeconds,
         int gracePeriodSeconds,
-        @NotNull World trialWorld,
-        @NotNull ProtectedRegion trialRegion,
-        @NotNull Location joinLocation,
-        @NotNull Location startLocation,
-        @NotNull Location endLocation,
-        @NotNull LobbyBossBarData lobbyBossBar,
-        @NotNull TrialBossBarData trialBossBar,
-        @NotNull List<TrialSpawnerConfig> trialSpawnerConfigList,
-        @NotNull List<VaultConfig> vaultConfigList) {
+        @NonNull World trialWorld,
+        @NonNull ProtectedRegion trialRegion,
+        @NonNull Location joinLocation,
+        @NonNull Location startLocation,
+        @NonNull Location endLocation,
+        @NonNull LobbyBossBarData lobbyBossBar,
+        @NonNull TrialBossBarData trialBossBar,
+        @NonNull List<TrialSpawnerConfig> trialSpawnerConfigList,
+        @NonNull List<VaultConfig> vaultConfigList) {
     /**
      * The data for the boss bar shown to the player during the trial.
      * @param timeLimitText The boss bar text to show when the trial has a time limit.
@@ -68,10 +68,10 @@ public record ChamberTrialData(
      */
     @ConfigSerializable
     public record TrialBossBarData(
-            @NotNull String timeLimitText,
-            @NotNull String noTimeLimitText,
-            @NotNull BossBar.Color color,
-            @NotNull BossBar.Overlay overlay) {}
+            @NonNull String timeLimitText,
+            @NonNull String noTimeLimitText,
+            BossBar.Color color,
+            BossBar.Overlay overlay) {}
     /**
      * The data for the boss bar shown to the player while in the lobby.
      * @param bossBarText The boss bar text to show.
@@ -80,7 +80,7 @@ public record ChamberTrialData(
      */
     @ConfigSerializable
     public record LobbyBossBarData(
-            @NotNull String bossBarText,
-            @NotNull BossBar.Color color,
-            @NotNull BossBar.Overlay overlay) {}
+            @NonNull String bossBarText,
+            BossBar.Color color,
+            BossBar.Overlay overlay) {}
 }

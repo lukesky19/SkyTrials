@@ -39,8 +39,8 @@ import org.bukkit.loot.LootTable;
 import org.bukkit.loot.LootTables;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,16 +49,16 @@ import java.util.Optional;
  * This class is used to create {@link LivingEntity} and {@link EntitySnapshot}.
  */
 public class EntityBuilder {
-    private final @NotNull ComponentLogger logger;
-    private final @NotNull EntityType entityType;
-    private final @NotNull World world;
-    private final @NotNull Location location;
+    private final @NonNull ComponentLogger logger;
+    private final @NonNull EntityType entityType;
+    private final @NonNull World world;
+    private final @NonNull Location location;
     private final int playerCount;
 
-    private final @NotNull EntityConfig.Options options;
-    private final @NotNull EquipmentConfig equipmentConfig;
-    private final @NotNull List<EffectConfig> effectConfigList;
-    private final @NotNull List<AttributeConfig> attributeConfigList;
+    private final EntityConfig.@NonNull Options options;
+    private final @NonNull EquipmentConfig equipmentConfig;
+    private final @NonNull List<EffectConfig> effectConfigList;
+    private final @NonNull List<AttributeConfig> attributeConfigList;
     private final @Nullable String lootTableName;
 
     /**
@@ -75,15 +75,15 @@ public class EntityBuilder {
      * @param lootTableName The {@link NamespacedKey} as a {@link String} for the loot table to apply to the entity.
      */
     public EntityBuilder(
-            @NotNull ComponentLogger logger,
-            @NotNull EntityType entityType,
-            @NotNull World world,
-            @NotNull Location location,
+            @NonNull ComponentLogger logger,
+            @NonNull EntityType entityType,
+            @NonNull World world,
+            @NonNull Location location,
             int playerCount,
-            @NotNull EntityConfig.Options options,
-            @NotNull EquipmentConfig equipmentConfig,
-            @NotNull List<EffectConfig> effectConfigList,
-            @NotNull List<AttributeConfig> attributeConfigList,
+            EntityConfig.@NonNull Options options,
+            @NonNull EquipmentConfig equipmentConfig,
+            @NonNull List<EffectConfig> effectConfigList,
+            @NonNull List<AttributeConfig> attributeConfigList,
             @Nullable String lootTableName) {
         this.logger = logger;
         this.entityType = entityType;
@@ -101,15 +101,15 @@ public class EntityBuilder {
      * Create and return the {@link LivingEntity}
      * @return A {@link LivingEntity}.
      */
-    public @NotNull LivingEntity createEntity() {
+    public @NonNull LivingEntity createEntity() {
         LivingEntity entity = (LivingEntity) world.spawnEntity(location, entityType);
 
-        Optional<ItemStack> optionalHelmet = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.helmet(), null, null, List.of()).buildItemStack();
-        Optional<ItemStack> optionalChestplate = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.chestplate(), null, null, List.of()).buildItemStack();
-        Optional<ItemStack> optionalLeggings = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.leggings(), null, null, List.of()).buildItemStack();
-        Optional<ItemStack> optionalBoots = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.boots(), null, null, List.of()).buildItemStack();
-        Optional<ItemStack> optionalMainHand = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.mainHand(), null, null, List.of()).buildItemStack();
-        Optional<ItemStack> optionalOffHand = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.offHand(), null, null, List.of()).buildItemStack();
+        Optional<ItemStack> optionalHelmet = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.helmet(), null, List.of()).buildItemStack();
+        Optional<ItemStack> optionalChestplate = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.chestplate(), null, List.of()).buildItemStack();
+        Optional<ItemStack> optionalLeggings = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.leggings(), null, List.of()).buildItemStack();
+        Optional<ItemStack> optionalBoots = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.boots(), null, List.of()).buildItemStack();
+        Optional<ItemStack> optionalMainHand = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.mainHand(), null, List.of()).buildItemStack();
+        Optional<ItemStack> optionalOffHand = new ItemStackBuilder(logger).fromItemStackConfig(equipmentConfig.offHand(), null, List.of()).buildItemStack();
 
         EntityEquipment entityEquipment = entity.getEquipment();
         if(entityEquipment != null) {
@@ -159,23 +159,23 @@ public class EntityBuilder {
         // Apply attributes
         for(AttributeConfig attributeConfig : attributeConfigList) {
             if(attributeConfig.name() == null) {
-                logger.warn(AdventureUtil.serialize("Unable to apply attribute due to an invalid attribute name."));
+                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid attribute name."));
                 continue;
             }
 
             if(attributeConfig.baseValue() == null) {
-                logger.warn(AdventureUtil.serialize("Unable to apply attribute due to an invalid base value."));
+                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid base value."));
                 continue;
             }
 
             if(attributeConfig.additionalValuePerPlayer() == null) {
-                logger.warn(AdventureUtil.serialize("Unable to apply attribute due to an invalid additional value per player."));
+                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid additional value per player."));
                 continue;
             }
 
             Optional<Attribute> optionalAttribute = RegistryUtil.getAttribute(logger, attributeConfig.name());
             if(optionalAttribute.isEmpty()) {
-                logger.warn(AdventureUtil.serialize("Unable to apply attribute due to an invalid attribute for " + attributeConfig.name()));
+                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid attribute for " + attributeConfig.name()));
                 continue;
             }
             Attribute attribute = optionalAttribute.get();
@@ -204,7 +204,7 @@ public class EntityBuilder {
 
         // Apply loot table
         if(lootTableName != null) {
-            Registry<@NotNull LootTables> lootTablesRegistry = Registry.LOOT_TABLES;
+            Registry<@NonNull LootTables> lootTablesRegistry = Registry.LOOT_TABLES;
 
             NamespacedKey key = NamespacedKey.fromString(lootTableName);
             if(key != null) {

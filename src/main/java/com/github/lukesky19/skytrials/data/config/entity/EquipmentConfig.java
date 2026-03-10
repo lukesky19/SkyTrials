@@ -19,8 +19,8 @@ package com.github.lukesky19.skytrials.data.config.entity;
 
 import com.github.lukesky19.skylib.api.itemstack.ItemStackConfig;
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This record contains the configuration to apply equipment to entities.
@@ -39,15 +39,15 @@ import org.jetbrains.annotations.Nullable;
  */
 @ConfigSerializable
 public record EquipmentConfig(
-        @NotNull ItemStackConfig helmet,
+        @NonNull ItemStackConfig helmet,
         @Nullable Double helmetDropChance,
-        @NotNull ItemStackConfig chestplate,
+        @NonNull ItemStackConfig chestplate,
         @Nullable Double chestplateDropChance,
-        @NotNull ItemStackConfig leggings,
+        @NonNull ItemStackConfig leggings,
         @Nullable Double leggingsDropChance,
-        @NotNull ItemStackConfig boots,
+        @NonNull ItemStackConfig boots,
         @Nullable Double bootsDropChance,
-        @NotNull ItemStackConfig mainHand,
+        @NonNull ItemStackConfig mainHand,
         @Nullable Double mainHandDropChance,
-        @NotNull ItemStackConfig offHand,
+        @NonNull ItemStackConfig offHand,
         @Nullable Double offHandDropChance) {}

@@ -22,7 +22,7 @@ import com.github.lukesky19.skylib.api.database.parameter.impl.LongParameter;
 import com.github.lukesky19.skylib.api.database.parameter.impl.StringParameter;
 import com.github.lukesky19.skylib.api.database.parameter.impl.UUIDParameter;
 import com.github.lukesky19.skytrials.database.QueueManager;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -32,8 +32,8 @@ import java.util.concurrent.CompletableFuture;
  * This class is used to create and interface with the cooldowns table in the database.
  */
 public class PlayerCooldownsTable {
-    private final @NotNull QueueManager queueManager;
-    private final @NotNull String tableName = "skytrials_cooldowns";
+    private final @NonNull QueueManager queueManager;
+    private final @NonNull String tableName = "skytrials_cooldowns";
 
     /**
      * Default Constructor.
@@ -49,7 +49,7 @@ public class PlayerCooldownsTable {
      * Constructor
      * @param queueManager A {@link QueueManager} instance.
      */
-    public PlayerCooldownsTable(@NotNull QueueManager queueManager) {
+    public PlayerCooldownsTable(@NonNull QueueManager queueManager) {
         this.queueManager = queueManager;
     }
 
@@ -74,7 +74,7 @@ public class PlayerCooldownsTable {
      * Get a {@link CompletableFuture} containing a {@link Map} mapping player {@link UUID}s to a {@link Map} mapping trials ids to cooldowns as a {@link Long}.
      * @return A {@link CompletableFuture} containing a {@link Map} mapping player {@link UUID}s to a {@link Map} mapping trials ids to cooldowns as a {@link Long}.
      */
-    public @NotNull CompletableFuture<@NotNull Map<UUID, Map<String, Long>>> loadPlayerCooldowns() {
+    public @NonNull CompletableFuture<@NonNull Map<UUID, Map<String, Long>>> loadPlayerCooldowns() {
         String selectSql = "SELECT trial_id, player_id, cooldown FROM " + tableName;
 
         return queueManager.queueReadTransaction(selectSql, resultSet -> {
@@ -106,7 +106,7 @@ public class PlayerCooldownsTable {
      * @return A {@link CompletableFuture} containing a {@link List} of {@link Boolean} with the results.
      * The list will contain false if an operation failed.
      */
-    public @NotNull CompletableFuture<List<Boolean>> saveCooldowns(@NotNull UUID playerId, @NotNull Map<String, Long> data) {
+    public @NonNull CompletableFuture<List<Boolean>> saveCooldowns(@NonNull UUID playerId, @NonNull Map<String, Long> data) {
         List<List<Parameter<?>>> listOfParameterLists = new ArrayList<>();
         String insertOrUpdateSql = "INSERT INTO " + tableName + " (trial_id, player_id, cooldown, last_updated) " +
                 "VALUES (?, ?, ?, ?) " +
@@ -145,7 +145,7 @@ public class PlayerCooldownsTable {
      * @param playerId The {@link UUID} of the player to save the cooldown for.
      * @param trialId The trial id the cooldown is for.
      */
-    public void removeCooldown(@NotNull UUID playerId, @NotNull String trialId) {
+    public void removeCooldown(@NonNull UUID playerId, @NonNull String trialId) {
         String deleteSql = "DELETE FROM " + tableName + " WHERE trial_id = ? AND player_id = ?";
 
         StringParameter trialIdParameter = new StringParameter(trialId);

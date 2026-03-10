@@ -18,7 +18,7 @@
 package com.github.lukesky19.skytrials.manager.player;
 
 import com.github.lukesky19.skytrials.data.player.PlayerData;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -26,13 +26,13 @@ import java.util.*;
  * This class manages grace periods for players that have logged out inside a trial.
  */
 public class GracePeriodManager {
-    private final @NotNull PlayerDataManager playerDataManager;
+    private final @NonNull PlayerDataManager playerDataManager;
 
     /**
      * Constructor
      * @param playerDataManager A {@link PlayerDataManager} instance.
      */
-    public GracePeriodManager(@NotNull PlayerDataManager playerDataManager) {
+    public GracePeriodManager(@NonNull PlayerDataManager playerDataManager) {
         this.playerDataManager = playerDataManager;
     }
 
@@ -42,7 +42,7 @@ public class GracePeriodManager {
      * @param trialId The id of the trial.
      * @param gracePeriodTimeSeconds The grace period time in seconds to apply.
      */
-    public void addGracePeriod(@NotNull UUID playerId, @NotNull String trialId, long gracePeriodTimeSeconds) {
+    public void addGracePeriod(@NonNull UUID playerId, @NonNull String trialId, long gracePeriodTimeSeconds) {
         PlayerData playerData = playerDataManager.getPlayerData(playerId);
 
         Map<String, Long> gracePeriodMap = playerData.getGracePeriodsMap();
@@ -55,7 +55,7 @@ public class GracePeriodManager {
      * @param playerId The {@link UUID} of the player.
      * @param trialId The id of the trial.
      */
-    public void removeGracePeriod(@NotNull UUID playerId, @NotNull String trialId) {
+    public void removeGracePeriod(@NonNull UUID playerId, @NonNull String trialId) {
         PlayerData playerData = playerDataManager.getPlayerData(playerId);
 
         Map<String, Long> gracePeriodMap = playerData.getGracePeriodsMap();
@@ -68,7 +68,7 @@ public class GracePeriodManager {
      * @param trialId The id of the trial.
      * @return A {@link List} of {@link UUID} that had their grace periods removed.
      */
-    public @NotNull List<UUID> removeGracePeriods(@NotNull String trialId) {
+    public @NonNull List<UUID> removeGracePeriods(@NonNull String trialId) {
         List<UUID> playersWithGracePeriods = new ArrayList<>();
 
         playerDataManager.getPlayerDataMap().forEach((uuid, playerData) -> {
@@ -88,7 +88,7 @@ public class GracePeriodManager {
      * @param trialId The id of the trial.
      * @return true if they have a grace period, otherwise false.
      */
-    public boolean doesPlayerHaveGracePeriod(@NotNull UUID playerId, @NotNull String trialId) {
+    public boolean doesPlayerHaveGracePeriod(@NonNull UUID playerId, @NonNull String trialId) {
         PlayerData playerData = playerDataManager.getPlayerData(playerId);
 
         return playerData.getGracePeriodsMap().containsKey(trialId);

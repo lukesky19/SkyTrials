@@ -26,16 +26,16 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This class creates the SkyTrials command.
  */
 public class SkyTrialsCommand{
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull LocaleManager localeManager;
-    private final @NotNull TrialManager trialManager;
-    private final @NotNull CooldownManager cooldownManager;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull LocaleManager localeManager;
+    private final @NonNull TrialManager trialManager;
+    private final @NonNull CooldownManager cooldownManager;
 
     /**
      * Constructor
@@ -45,10 +45,10 @@ public class SkyTrialsCommand{
      * @param cooldownManager A {@link CooldownManager} instance.
      */
     public SkyTrialsCommand(
-            @NotNull SkyTrials skyTrials,
-            @NotNull TrialManager trialManager,
-            @NotNull LocaleManager localeManager,
-            @NotNull CooldownManager cooldownManager) {
+            @NonNull SkyTrials skyTrials,
+            @NonNull TrialManager trialManager,
+            @NonNull LocaleManager localeManager,
+            @NonNull CooldownManager cooldownManager) {
         this.skyTrials = skyTrials;
         this.trialManager = trialManager;
         this.localeManager = localeManager;
@@ -59,7 +59,7 @@ public class SkyTrialsCommand{
      * Creates the /skytrials command.
      * @return A {@link LiteralCommandNode} of type {@link CommandSourceStack} for the /skytrials command.
      */
-    public @NotNull LiteralCommandNode<CommandSourceStack> createCommand() {
+    public @NonNull LiteralCommandNode<CommandSourceStack> createCommand() {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("skytrials")
                 .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials"));
 

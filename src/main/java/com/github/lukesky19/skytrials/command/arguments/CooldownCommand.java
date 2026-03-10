@@ -34,8 +34,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +44,9 @@ import java.util.UUID;
  * This class creates the cooldown command argument to manage player cooldowns for trials.
  */
 public class CooldownCommand {
-    private final @NotNull LocaleManager localeManager;
-    private final @NotNull TrialManager trialManager;
-    private final @NotNull CooldownManager cooldownManager;
+    private final @NonNull LocaleManager localeManager;
+    private final @NonNull TrialManager trialManager;
+    private final @NonNull CooldownManager cooldownManager;
 
     /**
      * Constructor
@@ -55,7 +54,7 @@ public class CooldownCommand {
      * @param trialManager A {@link TrialManager} instance.
      * @param cooldownManager A {@link CooldownManager} instance.
      */
-    public CooldownCommand(@NotNull LocaleManager localeManager, @NotNull TrialManager trialManager, @NotNull CooldownManager cooldownManager) {
+    public CooldownCommand(@NonNull LocaleManager localeManager, @NonNull TrialManager trialManager, @NonNull CooldownManager cooldownManager) {
         this.localeManager = localeManager;
         this.trialManager = trialManager;
         this.cooldownManager = cooldownManager;
@@ -65,7 +64,7 @@ public class CooldownCommand {
      * Creates the cooldown command argument to manage player cooldowns for trials.
      * @return A {@link LiteralCommandNode} of type {@link CommandSourceStack} for the cooldown command argument.
      */
-    public @NotNull LiteralCommandNode<CommandSourceStack> createCommand() {
+    public @NonNull LiteralCommandNode<CommandSourceStack> createCommand() {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("cooldown");
 
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown") && ctx.getSender() instanceof Player);
@@ -92,13 +91,13 @@ public class CooldownCommand {
                             placeholders.add(Placeholder.parsed("trial_id", trialId));
                             placeholders.add(Placeholder.parsed("player_name", targetPlayer.getName()));
 
-                            @Nullable Long cooldownTime = cooldownManager.getTrialCooldown(targetPlayerId, trialId);
+                            Long cooldownTime = cooldownManager.getTrialCooldown(targetPlayerId, trialId);
                             if(cooldownTime != null) {
                                 placeholders.add(Placeholder.parsed("time", localeManager.getTimeMessage(cooldownTime)));
 
-                                senderPlayer.sendMessage(AdventureUtil.serialize(targetPlayer, locale.prefix() + locale.playerCooldownTime(), placeholders));
+                                senderPlayer.sendMessage(AdventureUtil.deserialize(targetPlayer, locale.prefix() + locale.playerCooldownTime(), placeholders));
                             } else {
-                                senderPlayer.sendMessage(AdventureUtil.serialize(targetPlayer, locale.prefix() + locale.playerNoCooldown(), placeholders));
+                                senderPlayer.sendMessage(AdventureUtil.deserialize(targetPlayer, locale.prefix() + locale.playerNoCooldown(), placeholders));
                             }
 
                             return 1;
@@ -113,13 +112,13 @@ public class CooldownCommand {
                     List< TagResolver.Single> placeholders = new ArrayList<>();
                     placeholders.add(Placeholder.parsed("trial_id", trialId));
 
-                    @Nullable Long cooldownTime = cooldownManager.getTrialCooldown(uuid, trialId);
+                    Long cooldownTime = cooldownManager.getTrialCooldown(uuid, trialId);
                     if(cooldownTime != null) {
                         placeholders.add(Placeholder.parsed("time", localeManager.getTimeMessage(cooldownTime)));
 
-                        player.sendMessage(AdventureUtil.serialize(player, locale.prefix() + locale.cooldownTime(), placeholders));
+                        player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.cooldownTime(), placeholders));
                     } else {
-                        player.sendMessage(AdventureUtil.serialize(player, locale.prefix() + locale.noCooldown(), placeholders));
+                        player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.noCooldown(), placeholders));
                     }
 
                     return 1;
@@ -156,12 +155,12 @@ public class CooldownCommand {
                                                     Placeholder.parsed("player_name", target.getName()),
                                                     Placeholder.parsed("time", localeManager.getTimeMessage(cooldownSeconds)));
 
-                                            target.sendMessage(AdventureUtil.serialize(target, locale.prefix() + locale.cooldownApplied(), placeholders));
+                                            target.sendMessage(AdventureUtil.deserialize(target, locale.prefix() + locale.cooldownApplied(), placeholders));
 
                                             if(sender instanceof Player) {
-                                                sender.sendMessage(AdventureUtil.serialize(target, locale.prefix() + locale.playerCooldownApplied(), placeholders));
+                                                sender.sendMessage(AdventureUtil.deserialize(target, locale.prefix() + locale.playerCooldownApplied(), placeholders));
                                             } else {
-                                                sender.sendMessage(AdventureUtil.serialize(target, locale.playerCooldownApplied(), placeholders));
+                                                sender.sendMessage(AdventureUtil.deserialize(target, locale.playerCooldownApplied(), placeholders));
                                             }
 
                                             return 1;
@@ -196,20 +195,20 @@ public class CooldownCommand {
 
                                     boolean result = cooldownManager.removeCooldown(uuid, trialId);
                                     if(result) {
-                                        target.sendMessage(AdventureUtil.serialize(target, locale.prefix() + locale.cooldownRemoved(), placeholders));
+                                        target.sendMessage(AdventureUtil.deserialize(target, locale.prefix() + locale.cooldownRemoved(), placeholders));
 
                                         if(sender instanceof Player) {
-                                            sender.sendMessage(AdventureUtil.serialize(target, locale.prefix() + locale.playerCooldownRemoved(), placeholders));
+                                            sender.sendMessage(AdventureUtil.deserialize(target, locale.prefix() + locale.playerCooldownRemoved(), placeholders));
                                         } else {
-                                            sender.sendMessage(AdventureUtil.serialize(target, locale.playerCooldownRemoved(), placeholders));
+                                            sender.sendMessage(AdventureUtil.deserialize(target, locale.playerCooldownRemoved(), placeholders));
                                         }
 
                                         return 1;
                                     } else {
                                         if(sender instanceof Player) {
-                                            sender.sendMessage(AdventureUtil.serialize(locale.prefix() + "<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
+                                            sender.sendMessage(AdventureUtil.deserialize(locale.prefix() + "<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
                                         } else {
-                                            sender.sendMessage(AdventureUtil.serialize("<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
+                                            sender.sendMessage(AdventureUtil.deserialize("<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
                                         }
 
                                         return 0;

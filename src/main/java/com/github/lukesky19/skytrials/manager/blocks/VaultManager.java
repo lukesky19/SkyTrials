@@ -30,7 +30,7 @@ import org.bukkit.block.Vault;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.LootTables;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,14 +39,14 @@ import java.util.Optional;
  * Manages the placing of vaults inside trials.
  */
 public class VaultManager {
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull ComponentLogger logger;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull ComponentLogger logger;
 
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
-    public VaultManager(@NotNull SkyTrials skyTrials) {
+    public VaultManager(@NonNull SkyTrials skyTrials) {
         this.skyTrials = skyTrials;
         this.logger = skyTrials.getComponentLogger();
     }
@@ -55,34 +55,34 @@ public class VaultManager {
      * Spawns the vault blocks for the {@link List} of {@link VaultConfig} provided.
      * @param vaultConfigList A {@link List} of {@link VaultConfig}s.
      */
-    public void placeVaultBlocks(@NotNull List<VaultConfig> vaultConfigList) {
-        Registry<@NotNull LootTables> lootTablesRegistry = Registry.LOOT_TABLES;
+    public void placeVaultBlocks(@NonNull List<VaultConfig> vaultConfigList) {
+        Registry<@NonNull LootTables> lootTablesRegistry = Registry.LOOT_TABLES;
 
         for(VaultConfig vaultConfig : vaultConfigList) {
             if(vaultConfig.location().world() == null) {
-                logger.warn(AdventureUtil.serialize("The world name for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The world name for a vault config is invalid."));
                 continue;
             }
 
             World vaultWorld = skyTrials.getServer().getWorld(vaultConfig.location().world());
             if(vaultWorld == null) {
-                logger.warn(AdventureUtil.serialize("A world for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("A world for a vault config is invalid."));
                 continue;
             }
 
             LocationConfig locationConfig = vaultConfig.location();
             if(locationConfig.x() == null) {
-                logger.warn(AdventureUtil.serialize("The x coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The x coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.y() == null) {
-                logger.warn(AdventureUtil.serialize("The y coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The y coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.z() == null) {
-                logger.warn(AdventureUtil.serialize("The z coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The z coordinate for a vault config is invalid."));
                 continue;
             }
 
@@ -125,7 +125,7 @@ public class VaultManager {
 
                 // Extra null check to avoid the ItemStackBuilder spamming errors for non-configured keys
                 if(vaultConfig.keyItem().itemType() != null) {
-                    Optional<ItemStack> optionalKeyItem = new ItemStackBuilder(logger).fromItemStackConfig(vaultConfig.keyItem(), null, null, List.of()).buildItemStack();
+                    Optional<ItemStack> optionalKeyItem = new ItemStackBuilder(logger).fromItemStackConfig(vaultConfig.keyItem(), null, List.of()).buildItemStack();
                     optionalKeyItem.ifPresent(vaultState::setKeyItem);
                 }
 
@@ -138,32 +138,32 @@ public class VaultManager {
      * Removes the vault blocks that were placed for the {@link List} of {@link VaultConfig} provided.
      * @param vaultConfigList A {@link List} of {@link VaultConfig}s.
      */
-    public void removeVaultBlocks(@NotNull List<VaultConfig> vaultConfigList) {
+    public void removeVaultBlocks(@NonNull List<VaultConfig> vaultConfigList) {
         for(VaultConfig vaultConfig : vaultConfigList) {
             if(vaultConfig.location().world() == null) {
-                logger.warn(AdventureUtil.serialize("The world name for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The world name for a vault config is invalid."));
                 continue;
             }
 
             World vaultWorld = skyTrials.getServer().getWorld(vaultConfig.location().world());
             if(vaultWorld == null) {
-                logger.warn(AdventureUtil.serialize("A world for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("A world for a vault config is invalid."));
                 continue;
             }
 
             LocationConfig locationConfig = vaultConfig.location();
             if(locationConfig.x() == null) {
-                logger.warn(AdventureUtil.serialize("The x coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The x coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.y() == null) {
-                logger.warn(AdventureUtil.serialize("The y coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The y coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.z() == null) {
-                logger.warn(AdventureUtil.serialize("The z coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The z coordinate for a vault config is invalid."));
                 continue;
             }
 

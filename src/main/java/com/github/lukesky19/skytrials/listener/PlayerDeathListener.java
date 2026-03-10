@@ -24,7 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -32,13 +32,13 @@ import java.util.UUID;
  * This class listens to when a player dies in a trial and passing the event to the trial.
  */
 public class PlayerDeathListener implements Listener {
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public PlayerDeathListener(@NotNull TrialManager trialManager) {
+    public PlayerDeathListener(@NonNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 

@@ -23,7 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -31,13 +31,13 @@ import java.util.UUID;
  * Listens for when a player disconnects from the server and passes the event to the trial the player is in.
  */
 public class LogoutListener implements Listener {
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public LogoutListener(@NotNull TrialManager trialManager) {
+    public LogoutListener(@NonNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 

@@ -18,37 +18,41 @@
 package com.github.lukesky19.skytrials.manager.trial;
 
 import com.github.lukesky19.skytrials.SkyTrials;
-import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
-import com.github.lukesky19.skytrials.manager.player.CooldownManager;
 import com.github.lukesky19.skytrials.manager.blocks.SpawnerManager;
 import com.github.lukesky19.skytrials.manager.blocks.VaultManager;
 import com.github.lukesky19.skytrials.manager.entity.EntityManager;
+import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
+import com.github.lukesky19.skytrials.manager.player.CooldownManager;
 import com.github.lukesky19.skytrials.manager.player.GracePeriodManager;
 import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import com.github.lukesky19.skytrials.trial.impl.ChamberTrial;
 import com.github.lukesky19.skytrials.trial.impl.LevelTrial;
 import com.github.lukesky19.skytrials.util.TrialEndReason;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.*;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class manages the actual running trials.
  */
 public class TrialManager {
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull LocaleManager localeManager;
-    private final @NotNull TrialDataManager trialDataManager;
-    private final @NotNull SpawnerManager spawnerManager;
-    private final @NotNull EntityManager entityManager;
-    private final @NotNull VaultManager vaultManager;
-    private final @NotNull CooldownManager cooldownManager;
-    private final @NotNull GracePeriodManager gracePeriodManager;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull LocaleManager localeManager;
+    private final @NonNull TrialDataManager trialDataManager;
+    private final @NonNull SpawnerManager spawnerManager;
+    private final @NonNull EntityManager entityManager;
+    private final @NonNull VaultManager vaultManager;
+    private final @NonNull CooldownManager cooldownManager;
+    private final @NonNull GracePeriodManager gracePeriodManager;
 
-    private final @NotNull Map<String, AbstractTrial> trialMap = new HashMap<>();
+    private final @NonNull Map<String, AbstractTrial> trialMap = new HashMap<>();
 
     /**
      * Constructor
@@ -62,14 +66,14 @@ public class TrialManager {
      * @param gracePeriodManager A {@link GracePeriodManager} instance.
      */
     public TrialManager(
-            @NotNull SkyTrials skyTrials,
-            @NotNull LocaleManager localeManager,
-            @NotNull TrialDataManager trialDataManager,
-            @NotNull SpawnerManager spawnerManager,
-            @NotNull EntityManager entityManager,
-            @NotNull VaultManager vaultManager,
-            @NotNull CooldownManager cooldownManager,
-            @NotNull GracePeriodManager gracePeriodManager) {
+            @NonNull SkyTrials skyTrials,
+            @NonNull LocaleManager localeManager,
+            @NonNull TrialDataManager trialDataManager,
+            @NonNull SpawnerManager spawnerManager,
+            @NonNull EntityManager entityManager,
+            @NonNull VaultManager vaultManager,
+            @NonNull CooldownManager cooldownManager,
+            @NonNull GracePeriodManager gracePeriodManager) {
         this.skyTrials = skyTrials;
         this.localeManager = localeManager;
         this.trialDataManager = trialDataManager;
@@ -108,7 +112,7 @@ public class TrialManager {
      * @param trialId The id of the trial.
      * @return An {@link AbstractTrial} or null.
      */
-    public @Nullable AbstractTrial getTrialById(@NotNull String trialId) {
+    public @Nullable AbstractTrial getTrialById(@NonNull String trialId) {
         return trialMap.get(trialId);
     }
 
@@ -117,7 +121,7 @@ public class TrialManager {
      * @param uuid The {@link UUID} of the player.
      * @return An {@link AbstractTrial} or null.
      */
-    public @Nullable AbstractTrial getTrialByPlayerUUID(@NotNull UUID uuid) {
+    public @Nullable AbstractTrial getTrialByPlayerUUID(@NonNull UUID uuid) {
         for(AbstractTrial trial : trialMap.values()) {
             if(trial.getPlayerIds().contains(uuid)) return trial;
         }
@@ -130,7 +134,7 @@ public class TrialManager {
      * @param uuid The {@link UUID} of the playe.r
      * @return true if in a trial, otherwise false.
      */
-    public boolean isPlayerInTrial(@NotNull UUID uuid) {
+    public boolean isPlayerInTrial(@NonNull UUID uuid) {
         for(AbstractTrial trial : trialMap.values()) {
             if(trial.getPlayerIds().contains(uuid)) return true;
         }
@@ -143,7 +147,7 @@ public class TrialManager {
      * @param location The {@link Location} to check for a trial for.
      * @return An {@link AbstractTrial} or null.
      */
-    public @Nullable AbstractTrial getTrialByLocation(@NotNull Location location) {
+    public @Nullable AbstractTrial getTrialByLocation(@NonNull Location location) {
         for(AbstractTrial trial : trialMap.values()) {
             World trialWorld = trial.getWorld();
             ProtectedRegion trialRegion = trial.getRegion();
@@ -160,7 +164,7 @@ public class TrialManager {
      * Get a {@link List} of {@link String} for trial ids.
      * @return A {@link List} of {@link String} for trial ids.
      */
-    public @NotNull List<String> getTrialIds() {
+    public @NonNull List<String> getTrialIds() {
         return trialMap.keySet().stream().toList();
     }
 
@@ -168,7 +172,7 @@ public class TrialManager {
      * Get a {@link List} of {@link AbstractTrial}s for all created trials.
      * @return A {@link List} of {@link AbstractTrial}s
      */
-    public @NotNull List<AbstractTrial> getTrials() {
+    public @NonNull List<AbstractTrial> getTrials() {
         return trialMap.values().stream().toList();
     }
 }

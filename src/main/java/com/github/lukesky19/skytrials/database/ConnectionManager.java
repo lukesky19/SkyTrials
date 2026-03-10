@@ -5,7 +5,7 @@ import com.github.lukesky19.skylib.libs.hikaricp.HikariConfig;
 import com.github.lukesky19.skylib.libs.hikaricp.HikariDataSource;
 import com.github.lukesky19.skytrials.SkyTrials;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 
@@ -17,7 +17,7 @@ public class ConnectionManager extends AbstractConnectionManager {
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
-    public ConnectionManager(@NotNull SkyTrials skyTrials) {
+    public ConnectionManager(@NonNull SkyTrials skyTrials) {
         super(skyTrials);
     }
 
@@ -27,7 +27,7 @@ public class ConnectionManager extends AbstractConnectionManager {
      * @return A {@link HikariDataSource} object.
      */
     @Override
-    protected @NotNull HikariDataSource createHikariDataSource(@NotNull Plugin plugin) {
+    protected @NonNull HikariDataSource createHikariDataSource(@NonNull Plugin plugin) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:sqlite:" +  plugin.getDataFolder().getAbsolutePath() + File.separator + "database.db");
         config.setAutoCommit(true);

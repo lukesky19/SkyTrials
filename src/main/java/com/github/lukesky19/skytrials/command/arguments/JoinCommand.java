@@ -18,8 +18,8 @@
 package com.github.lukesky19.skytrials.command.arguments;
 
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
+import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
 import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -28,7 +28,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -36,15 +36,15 @@ import java.util.UUID;
  * This class creates the join command argument to join a trial.
  */
 public class JoinCommand {
-    private final @NotNull LocaleManager localeManager;
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull LocaleManager localeManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param localeManager A {@link LocaleManager} instance.
      * @param trialManager A {@link TrialManager} instance.
      */
-    public JoinCommand(@NotNull LocaleManager localeManager, @NotNull TrialManager trialManager) {
+    public JoinCommand(@NonNull LocaleManager localeManager, @NonNull TrialManager trialManager) {
         this.localeManager = localeManager;
         this.trialManager = trialManager;
     }
@@ -53,7 +53,7 @@ public class JoinCommand {
      * Creates the join command argument to join a trial.
      * @return A {@link LiteralCommandNode} of type {@link CommandSourceStack} for the join command argument.
      */
-    public @NotNull LiteralCommandNode<CommandSourceStack> createCommand() {
+    public @NonNull LiteralCommandNode<CommandSourceStack> createCommand() {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("join");
 
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.join") && ctx.getSender() instanceof Player);
@@ -74,7 +74,7 @@ public class JoinCommand {
                     String trialId = ctx.getArgument("trial_id", String.class);
 
                     if(trialManager.isPlayerInTrial(uuid)) {
-                        player.sendMessage(AdventureUtil.serialize(locale.prefix() + locale.joinTrialInTrial()));
+                        player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.joinTrialInTrial()));
                         return 0;
                     }
 

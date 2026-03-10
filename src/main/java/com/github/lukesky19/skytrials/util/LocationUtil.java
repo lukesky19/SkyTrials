@@ -21,7 +21,7 @@ import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.misc.LocationConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 
@@ -45,7 +45,7 @@ public class LocationUtil {
      * @param locationConfig A {@link LocationConfig}.
      * @return A {@link Location} or null if creation failed.
      */
-    public static @Nullable Location getLocation(@NotNull SkyTrials skyTrials, @NotNull LocationConfig locationConfig) {
+    public static @Nullable Location getLocation(@NonNull SkyTrials skyTrials, @NonNull LocationConfig locationConfig) {
         if(locationConfig.world() == null
                 || locationConfig.x() == null
                 || locationConfig.y() == null

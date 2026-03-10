@@ -25,15 +25,18 @@ import com.github.lukesky19.skytrials.data.config.block.TrialSpawnerConfig;
 import com.github.lukesky19.skytrials.data.config.entity.EntityConfig;
 import com.github.lukesky19.skytrials.data.config.misc.LocationConfig;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TrialSpawner;
 import org.bukkit.block.spawner.SpawnRule;
 import org.bukkit.block.spawner.SpawnerEntry;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntitySnapshot;
+import org.bukkit.entity.EntityType;
 import org.bukkit.spawner.TrialSpawnerConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,14 +46,14 @@ import java.util.Optional;
  * This class manages the placing and removal of trial spawners.
  */
 public class SpawnerManager {
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull ComponentLogger logger;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull ComponentLogger logger;
 
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
-    public SpawnerManager(@NotNull SkyTrials skyTrials) {
+    public SpawnerManager(@NonNull SkyTrials skyTrials) {
         this.skyTrials = skyTrials;
         this.logger = skyTrials.getComponentLogger();
     }
@@ -60,32 +63,32 @@ public class SpawnerManager {
      * @param trialSpawnerConfigList A {@link List} of {@link TrialSpawnerConfig}s.
      * @param playerCount The number of players in the trial.
      */
-    public void placeTrialSpawners(@NotNull List<TrialSpawnerConfig> trialSpawnerConfigList, int playerCount) {
+    public void placeTrialSpawners(@NonNull List<TrialSpawnerConfig> trialSpawnerConfigList, int playerCount) {
         for(TrialSpawnerConfig trialSpawnerConfig : trialSpawnerConfigList) {
             if(trialSpawnerConfig.location().world() == null) {
-                logger.warn(AdventureUtil.serialize("The world name for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The world name for a trial spawner config is invalid."));
                 continue;
             }
 
             World spawnerWorld = skyTrials.getServer().getWorld(trialSpawnerConfig.location().world());
             if(spawnerWorld == null) {
-                logger.warn(AdventureUtil.serialize("A world for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("A world for a trial spawner config is invalid."));
                 continue;
             }
 
             LocationConfig locationConfig = trialSpawnerConfig.location();
             if(locationConfig.x() == null) {
-                logger.warn(AdventureUtil.serialize("The x coordinate for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The x coordinate for a trial spawner config is invalid."));
                 continue;
             }
 
             if(locationConfig.y() == null) {
-                logger.warn(AdventureUtil.serialize("The y coordinate for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The y coordinate for a trial spawner config is invalid."));
                 continue;
             }
 
             if(locationConfig.z() == null) {
-                logger.warn(AdventureUtil.serialize("The z coordinate for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The z coordinate for a trial spawner config is invalid."));
                 continue;
             }
 
@@ -117,32 +120,32 @@ public class SpawnerManager {
      * Removes the trial spawners that were placed for the {@link List} of {@link TrialSpawnerConfig} provided.
      * @param trialSpawnerConfigList A {@link List} of {@link TrialSpawnerConfig}s.
      */
-    public void removeTrialSpawners(@NotNull List<TrialSpawnerConfig> trialSpawnerConfigList) {
+    public void removeTrialSpawners(@NonNull List<TrialSpawnerConfig> trialSpawnerConfigList) {
         for(TrialSpawnerConfig trialSpawnerConfig : trialSpawnerConfigList) {
             if(trialSpawnerConfig.location().world() == null) {
-                logger.warn(AdventureUtil.serialize("The world name for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The world name for a trial spawner config is invalid."));
                 continue;
             }
 
             World spawnerWorld = skyTrials.getServer().getWorld(trialSpawnerConfig.location().world());
             if(spawnerWorld == null) {
-                logger.warn(AdventureUtil.serialize("A world for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("A world for a trial spawner config is invalid."));
                 continue;
             }
 
             LocationConfig locationConfig = trialSpawnerConfig.location();
             if(locationConfig.x() == null) {
-                logger.warn(AdventureUtil.serialize("The x coordinate for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The x coordinate for a trial spawner config is invalid."));
                 continue;
             }
 
             if(locationConfig.y() == null) {
-                logger.warn(AdventureUtil.serialize("The y coordinate for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The y coordinate for a trial spawner config is invalid."));
                 continue;
             }
 
             if(locationConfig.z() == null) {
-                logger.warn(AdventureUtil.serialize("The z coordinate for a trial spawner config is invalid."));
+                logger.warn(AdventureUtil.deserialize("The z coordinate for a trial spawner config is invalid."));
                 continue;
             }
 
@@ -164,10 +167,10 @@ public class SpawnerManager {
      * @param playerCount The number of players in the trial.
      */
     private void applyTrialSpawnerConfigurationSettings(
-            @NotNull World spawnerWorld,
-            @NotNull Location spawnerLocation,
-            @NotNull TrialSpawnerConfiguration configuration,
-            @NotNull TrialSpawnerConfig.SpawnerConfig spawnerConfig,
+            @NonNull World spawnerWorld,
+            @NonNull Location spawnerLocation,
+            @NonNull TrialSpawnerConfiguration configuration,
+            TrialSpawnerConfig.SpawnerConfig spawnerConfig,
             int playerCount) {
         if(spawnerConfig.simultaneousMobs() != null) {
             configuration.setBaseSimultaneousEntities(spawnerConfig.simultaneousMobs());
@@ -209,22 +212,22 @@ public class SpawnerManager {
      * @param playerCount The number of players in the trial.
      * @return The created {@link SpawnerEntry} or null if creation failed.
      */
-    private @Nullable SpawnerEntry createSpawnerEntry(@NotNull World world, @NotNull Location location, @NotNull TrialSpawnerConfig.SpawnPotential spawnPotential, int playerCount) {
+    private @Nullable SpawnerEntry createSpawnerEntry(@NonNull World world, @NonNull Location location, TrialSpawnerConfig.SpawnPotential spawnPotential, int playerCount) {
         EntityConfig entityConfig = spawnPotential.entityConfig();
 
         if(entityConfig.entityType() == null) {
-            logger.warn(AdventureUtil.serialize("Unable to create SpawnerEntry due to an invalid EntityType name."));
+            logger.warn(AdventureUtil.deserialize("Unable to create SpawnerEntry due to an invalid EntityType name."));
             return null;
         }
 
         if(spawnPotential.weight() == null) {
-            logger.warn(AdventureUtil.serialize("Unable to create SpawnerEntry due to an invalid weight for entity Type: " + entityConfig.entityType()));
+            logger.warn(AdventureUtil.deserialize("Unable to create SpawnerEntry due to an invalid weight for entity Type: " + entityConfig.entityType()));
             return null;
         }
 
         Optional<EntityType> optionalEntityType = RegistryUtil.getEntityType(logger, entityConfig.entityType());
         if(optionalEntityType.isEmpty()) {
-            logger.warn(AdventureUtil.serialize("Unable to create SpawnerEntry due to an invalid EntityType for key " + entityConfig.entityType()));
+            logger.warn(AdventureUtil.deserialize("Unable to create SpawnerEntry due to an invalid EntityType for key " + entityConfig.entityType()));
             return null;
         }
 

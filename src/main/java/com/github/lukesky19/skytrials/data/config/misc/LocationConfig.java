@@ -19,7 +19,7 @@ package com.github.lukesky19.skytrials.data.config.misc;
 
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
 import org.bukkit.Location;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This record contains the configuration to create a {@link Location}.

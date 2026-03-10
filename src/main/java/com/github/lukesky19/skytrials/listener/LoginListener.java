@@ -24,19 +24,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This class listens for when a player joins the server and passes the event to any trials their join location is on.
  */
 public class LoginListener implements Listener {
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public LoginListener(@NotNull TrialManager trialManager) {
+    public LoginListener(@NonNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 

@@ -23,19 +23,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This class listens to a EntityPotionEffectEvent and if the entity is inside a trial, pass the event to the trial.
  */
 public class EntityPotionEffectListener implements Listener {
-    private final @NotNull TrialManager trialManager;
+    private final @NonNull TrialManager trialManager;
 
     /**
      * Constructor
      * @param trialManager A {@link TrialManager} instance.
      */
-    public EntityPotionEffectListener(@NotNull TrialManager trialManager) {
+    public EntityPotionEffectListener(@NonNull TrialManager trialManager) {
         this.trialManager = trialManager;
     }
 

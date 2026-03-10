@@ -24,7 +24,7 @@ import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.trial.ChamberTrialConfig;
 import com.github.lukesky19.skytrials.data.config.trial.LevelTrialConfig;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,16 +40,16 @@ import static com.github.lukesky19.skylib.api.configurate.ConfigurationUtility.g
  * This class manages trial configurations.
  */
 public class TrialConfigManager {
-    private final @NotNull SkyTrials skyTrials;
+    private final @NonNull SkyTrials skyTrials;
 
-    private final @NotNull List<ChamberTrialConfig> chamberTrialConfigList = new ArrayList<>();
-    private final @NotNull List<LevelTrialConfig> levelTrialConfigList = new ArrayList<>();
+    private final @NonNull List<ChamberTrialConfig> chamberTrialConfigList = new ArrayList<>();
+    private final @NonNull List<LevelTrialConfig> levelTrialConfigList = new ArrayList<>();
 
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
-    public TrialConfigManager(@NotNull SkyTrials skyTrials)  {
+    public TrialConfigManager(@NonNull SkyTrials skyTrials)  {
         this.skyTrials = skyTrials;
     }
 
@@ -57,7 +57,7 @@ public class TrialConfigManager {
      * Get a {@link List} of {@link ChamberTrialConfig}s.
      * @return A {@link List} of {@link ChamberTrialConfig}s.
      */
-    public @NotNull List<ChamberTrialConfig> getChamberTrialConfigList() {
+    public @NonNull List<ChamberTrialConfig> getChamberTrialConfigList() {
         return chamberTrialConfigList;
     }
 
@@ -65,7 +65,7 @@ public class TrialConfigManager {
      * Get a {@link List} of {@link LevelTrialConfig}s.
      * @return A {@link List} of {@link LevelTrialConfig}s.
      */
-    public @NotNull List<LevelTrialConfig> getLevelTrialConfigList() {
+    public @NonNull List<LevelTrialConfig> getLevelTrialConfigList() {
         return levelTrialConfigList;
     }
 
@@ -82,7 +82,7 @@ public class TrialConfigManager {
             try {
                 Files.createDirectories(chamberTrialsPath);
             } catch (IOException e) {
-                logger.error(AdventureUtil.serialize("An error occurred while creating the chamber trial config directory: " + e.getMessage()));
+                logger.error(AdventureUtil.deserialize("An error occurred while creating the chamber trial config directory: " + e.getMessage()));
                 return;
             }
         }
@@ -91,7 +91,7 @@ public class TrialConfigManager {
             try {
                 Files.createDirectories(levelTrialsPath);
             } catch (IOException e) {
-                logger.error(AdventureUtil.serialize("An error occurred while creating the level trial config directory: " + e.getMessage()));
+                logger.error(AdventureUtil.deserialize("An error occurred while creating the level trial config directory: " + e.getMessage()));
                 return;
             }
         }
@@ -104,40 +104,40 @@ public class TrialConfigManager {
         try(Stream<Path> paths = Files.walk(chamberTrialsPath)) {
             paths.filter(Files::isRegularFile)
                     .forEach(path -> {
-                        @NotNull YamlConfigurationLoader loader = getYamlConfigurationLoader(path);
+                        YamlConfigurationLoader loader = getYamlConfigurationLoader(path);
                         try {
                             ChamberTrialConfig chamberTrialConfig = loader.load().get(ChamberTrialConfig.class);
                             if(chamberTrialConfig != null) {
                                 chamberTrialConfigList.add(chamberTrialConfig);
                             } else {
-                                logger.warn(AdventureUtil.serialize("Failed to load trial config for " + path.toFile().getName()));
+                                logger.warn(AdventureUtil.deserialize("Failed to load trial config for " + path.toFile().getName()));
                             }
                         } catch(ConfigurateException e) {
-                            logger.warn(AdventureUtil.serialize("Failed to load trial config for " + path.toFile().getName() + ". Error: " + e.getMessage()));
+                            logger.warn(AdventureUtil.deserialize("Failed to load trial config for " + path.toFile().getName() + ". Error: " + e.getMessage()));
                         }
                     });
         } catch (IOException e) {
-            logger.error(AdventureUtil.serialize("An error occurred while processing chamber trial config files: " + e.getMessage()));
+            logger.error(AdventureUtil.deserialize("An error occurred while processing chamber trial config files: " + e.getMessage()));
         }
 
         // Load any level trial configs
         try(Stream<Path> paths = Files.walk(levelTrialsPath)) {
             paths.filter(Files::isRegularFile)
                     .forEach(path -> {
-                        @NotNull YamlConfigurationLoader loader = getYamlConfigurationLoader(path);
+                        YamlConfigurationLoader loader = getYamlConfigurationLoader(path);
                         try {
                             LevelTrialConfig levelTrialConfig = loader.load().get(LevelTrialConfig.class);
                             if(levelTrialConfig != null) {
                                 levelTrialConfigList.add(levelTrialConfig);
                             } else {
-                                logger.warn(AdventureUtil.serialize("Failed to load trial config for " + path.toFile().getName()));
+                                logger.warn(AdventureUtil.deserialize("Failed to load trial config for " + path.toFile().getName()));
                             }
                         } catch(ConfigurateException e) {
-                            logger.warn(AdventureUtil.serialize("Failed to load trial config for " + path.toFile().getName() + ". Error: " + e.getMessage()));
+                            logger.warn(AdventureUtil.deserialize("Failed to load trial config for " + path.toFile().getName() + ". Error: " + e.getMessage()));
                         }
                     });
         } catch (IOException e) {
-            logger.error(AdventureUtil.serialize("An error occurred while processing level trial config files: " + e.getMessage()));
+            logger.error(AdventureUtil.deserialize("An error occurred while processing level trial config files: " + e.getMessage()));
         }
     }
 }

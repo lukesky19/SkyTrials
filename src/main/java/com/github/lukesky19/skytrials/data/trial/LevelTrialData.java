@@ -27,7 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -52,22 +52,22 @@ import java.util.List;
  */
 @ConfigSerializable
 public record LevelTrialData(
-        @NotNull String trialId,
+        @NonNull String trialId,
         int timeLimitSeconds,
         int cooldownSeconds,
         int gracePeriodSeconds,
-        @NotNull World trialWorld,
-        @NotNull ProtectedRegion trialRegion,
-        @NotNull Location joinLocation,
-        @NotNull Location endLocation,
-        @NotNull BossBarData lobbyBossBar,
-        @NotNull BossBarData trialBossBar,
+        @NonNull World trialWorld,
+        @NonNull ProtectedRegion trialRegion,
+        @NonNull Location joinLocation,
+        @NonNull Location endLocation,
+        @NonNull BossBarData lobbyBossBar,
+        @NonNull BossBarData trialBossBar,
         boolean clearEffectsOnTrialEnd,
         boolean rewardOnTimeEnd,
-        @NotNull List<PotionEffect> playerEffects,
-        @NotNull List<ItemStack> trialRewardItemStacks,
-        @NotNull List<String> trialRewardCommands,
-        @NotNull List<LevelData> levels) {
+        @NonNull List<PotionEffect> playerEffects,
+        @NonNull List<ItemStack> trialRewardItemStacks,
+        @NonNull List<String> trialRewardCommands,
+        @NonNull List<LevelData> levels) {
     /**
      * This record contains the data for a single level.
      * @param startLocation The trial's start {@link Location}.
@@ -89,7 +89,7 @@ public record LevelTrialData(
      */
     @ConfigSerializable
     public record LevelData(
-            @NotNull Location startLocation,
+            @NonNull Location startLocation,
             boolean removeMobsOnLevelEnd,
             boolean clearEffectsOnLevelEnd,
             boolean allowMilkEffectRemoval,
@@ -101,10 +101,10 @@ public record LevelTrialData(
             int additionalSpawnCountPerPlayer,
             long mobSpawnStartDelay,
             long mobSpawnFrequencySeconds,
-            @NotNull List<PotionEffect> playerEffects,
-            @NotNull List<ItemStack> rewardItemStacks,
-            @NotNull List<String> rewardCommands,
-            @NotNull List<MobSpawn> mobSpawnList) {}
+            @NonNull List<PotionEffect> playerEffects,
+            @NonNull List<ItemStack> rewardItemStacks,
+            @NonNull List<String> rewardCommands,
+            @NonNull List<MobSpawn> mobSpawnList) {}
     /**
      * The data for the boss bar shown to the player.
      * @param bossBarText The boss bar text to show when in the trial.
@@ -113,9 +113,9 @@ public record LevelTrialData(
      */
     @ConfigSerializable
     public record BossBarData(
-            @NotNull String bossBarText,
-            @NotNull BossBar.Color color,
-            @NotNull BossBar.Overlay overlay) {}
+            @NonNull String bossBarText,
+            BossBar.Color color,
+            BossBar.Overlay overlay) {}
     /**
      * The {@link EntityConfig} for the mob and the {@link List} of {@link Location} that it can spawn at.
      * @param entityConfig The {@link EntityConfig} for the mob.
@@ -123,6 +123,6 @@ public record LevelTrialData(
      */
     @ConfigSerializable
     public record MobSpawn(
-            @NotNull EntityConfig entityConfig,
-            @NotNull List<Location> spawnLocations) {}
+            @NonNull EntityConfig entityConfig,
+            @NonNull List<Location> spawnLocations) {}
 }

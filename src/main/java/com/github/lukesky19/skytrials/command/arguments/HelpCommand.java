@@ -18,26 +18,26 @@
 package com.github.lukesky19.skytrials.command.arguments;
 
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
+import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This class creates the help command argument to display the help message.
  */
 public class HelpCommand {
-    private final @NotNull LocaleManager localeManager;
+    private final @NonNull LocaleManager localeManager;
 
     /**
      * Constructor
      * @param localeManager A {@link LocaleManager} instance.
      */
-    public HelpCommand(@NotNull LocaleManager localeManager) {
+    public HelpCommand(@NonNull LocaleManager localeManager) {
         this.localeManager = localeManager;
     }
 
@@ -45,7 +45,7 @@ public class HelpCommand {
      * Creates the help command argument to display the help message.
      * @return A {@link LiteralCommandNode} of type {@link CommandSourceStack} for the help command argument.
      */
-    public @NotNull LiteralCommandNode<CommandSourceStack> createCommand() {
+    public @NonNull LiteralCommandNode<CommandSourceStack> createCommand() {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("help");
 
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.help"));
@@ -55,7 +55,7 @@ public class HelpCommand {
             Locale locale = localeManager.getLocale();
 
             for(String msg : locale.help()) {
-                sender.sendMessage(AdventureUtil.serialize(msg));
+                sender.sendMessage(AdventureUtil.deserialize(msg));
             }
 
             return 1;

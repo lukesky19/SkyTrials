@@ -24,7 +24,7 @@ import com.github.lukesky19.skytrials.manager.player.PlayerDataManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
 import com.github.lukesky19.skytrials.trial.AbstractTrial;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 
@@ -32,11 +32,11 @@ import javax.annotation.Nullable;
  * This class manages {@link BukkitTask}s for the plugin.
  */
 public class TaskManager {
-    private final @NotNull SkyTrials skyTrials;
-    private final @NotNull TrialManager trialManager;
-    private final @NotNull PlayerDataManager playerDataManager;
-    private final @NotNull CooldownManager cooldownManager;
-    private final @NotNull GracePeriodManager gracePeriodManager;
+    private final @NonNull SkyTrials skyTrials;
+    private final @NonNull TrialManager trialManager;
+    private final @NonNull PlayerDataManager playerDataManager;
+    private final @NonNull CooldownManager cooldownManager;
+    private final @NonNull GracePeriodManager gracePeriodManager;
 
     private @Nullable BukkitTask timerTask;
     private @Nullable BukkitTask playerDataSaveTask;
@@ -50,11 +50,11 @@ public class TaskManager {
      * @param gracePeriodManager A {@link GracePeriodManager} instance.
      */
     public TaskManager(
-            @NotNull SkyTrials skyTrials,
-            @NotNull TrialManager trialManager,
-            @NotNull PlayerDataManager playerDataManager,
-            @NotNull CooldownManager cooldownManager,
-            @NotNull GracePeriodManager gracePeriodManager) {
+            @NonNull SkyTrials skyTrials,
+            @NonNull TrialManager trialManager,
+            @NonNull PlayerDataManager playerDataManager,
+            @NonNull CooldownManager cooldownManager,
+            @NonNull GracePeriodManager gracePeriodManager) {
         this.skyTrials = skyTrials;
         this.trialManager = trialManager;
         this.playerDataManager = playerDataManager;

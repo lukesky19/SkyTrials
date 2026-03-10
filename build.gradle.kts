@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.lukesky19"
-version = "2.0.0.1"
+version = "2.1.0.0"
 
 repositories {
     mavenCentral()
@@ -24,10 +24,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.9-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.16")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
-    compileOnly("com.github.lukesky19:SkyLib:1.3.1.0")
+    compileOnly("com.github.lukesky19:SkyLib:1.5.0.0")
 }
 
 java {

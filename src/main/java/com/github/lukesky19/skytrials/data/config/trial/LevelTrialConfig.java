@@ -27,7 +27,7 @@ import com.github.lukesky19.skytrials.data.trial.LevelTrialData;
 import com.github.lukesky19.skytrials.trial.impl.LevelTrial;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -58,17 +58,17 @@ public record LevelTrialConfig(
         @Nullable Integer timeLimitSeconds,
         @Nullable Integer cooldownSeconds,
         @Nullable Integer gracePeriodSeconds,
-        @NotNull RegionConfig region,
-        @NotNull LocationConfig joinLocation,
-        @NotNull LocationConfig endLocation,
-        @NotNull BossBarConfig lobbyBossBar,
-        @NotNull BossBarConfig trialBossBar,
+        @NonNull RegionConfig region,
+        @NonNull LocationConfig joinLocation,
+        @NonNull LocationConfig endLocation,
+        @NonNull BossBarConfig lobbyBossBar,
+        @NonNull BossBarConfig trialBossBar,
         @Nullable Boolean clearEffectsOnTrialEnd,
         @Nullable Boolean rewardOnTimeEnd,
-        @NotNull List<EffectConfig> playerEffects,
-        @NotNull List<ItemStackConfig> endItemRewards,
-        @NotNull List<String> endCommandsRewards,
-        @NotNull List<Level> levels) {
+        @NonNull List<EffectConfig> playerEffects,
+        @NonNull List<ItemStackConfig> endItemRewards,
+        @NonNull List<String> endCommandsRewards,
+        @NonNull List<Level> levels) {
     /**
      * This record contains the configuration for a single level.
      * @param startLocation The {@link LocationConfig} for the start area.
@@ -90,7 +90,7 @@ public record LevelTrialConfig(
      */
     @ConfigSerializable
     public record Level(
-            @NotNull LocationConfig startLocation,
+            @NonNull LocationConfig startLocation,
             @Nullable Boolean removeMobsOnLevelEnd,
             @Nullable Boolean clearEffectsOnLevelEnd,
             @Nullable Boolean allowMilkEffectRemoval,
@@ -102,10 +102,10 @@ public record LevelTrialConfig(
             @Nullable Integer additionalSpawnCountPerPlayer, // - 1 to disable
             @Nullable Long mobSpawnStartDelay,
             @Nullable Long mobSpawnFrequencySeconds,
-            @NotNull List<EffectConfig> playerEffects,
-            @NotNull List<ItemStackConfig> rewardItems,
-            @NotNull List<String> rewardCommands,
-            @NotNull List<MobSpawn> mobSpawns) {}
+            @NonNull List<EffectConfig> playerEffects,
+            @NonNull List<ItemStackConfig> rewardItems,
+            @NonNull List<String> rewardCommands,
+            @NonNull List<MobSpawn> mobSpawns) {}
     /**
      * The data for the boss bar shown to the player.
      * @param bossBarText The boss bar text to show when in the lobby or trial.
@@ -124,6 +124,6 @@ public record LevelTrialConfig(
      */
     @ConfigSerializable
     public record MobSpawn(
-            @NotNull EntityConfig entityConfig,
-            @NotNull List<LocationConfig> spawnLocations) {}
+            @NonNull EntityConfig entityConfig,
+            @NonNull List<LocationConfig> spawnLocations) {}
 }

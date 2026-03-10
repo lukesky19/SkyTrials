@@ -159,12 +159,12 @@ public final class SkyTrials extends JavaPlugin {
             String[] splitVersion = version.split("\\.");
             int second = Integer.parseInt(splitVersion[1]);
 
-            if(second >= 3) {
+            if(second >= 5) {
                 return true;
             }
         }
 
-        this.getComponentLogger().error(AdventureUtil.serialize("SkyLib Version 1.3.0.0 or newer is required to run this plugin."));
+        this.getComponentLogger().error(AdventureUtil.deserialize("SkyLib Version 1.5.0.0 or newer is required to run this plugin."));
         this.getServer().getPluginManager().disablePlugin(this);
         return false;
     }
@@ -178,8 +178,8 @@ public final class SkyTrials extends JavaPlugin {
         int minor = VersionUtil.getMinorVersion();
 
         if(major < 21 && minor < 3) {
-            this.getComponentLogger().error(AdventureUtil.serialize("This plugin currently only supports versions 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, and 1.21.9."));
-            this.getComponentLogger().error(AdventureUtil.serialize("If a new Minecraft version has released, please check my <click:OPEN_URL:https://github.com/lukesky19>GitHub</click> for updates."));
+            this.getComponentLogger().error(AdventureUtil.deserialize("This plugin currently only supports versions 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, 1.21.9, 1.21.10, and 1.21.11."));
+            this.getComponentLogger().error(AdventureUtil.deserialize("If a new Minecraft version has released, please check my <click:OPEN_URL:https://github.com/lukesky19>GitHub</click> for updates."));
             this.getServer().getPluginManager().disablePlugin(this);
             return false;
         }

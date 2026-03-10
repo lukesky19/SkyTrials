@@ -24,8 +24,8 @@ import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.settings.Settings;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,14 +34,14 @@ import java.nio.file.Path;
  * This class manages the plugin's settings.
  */
 public class SettingsManager {
-    private final @NotNull SkyTrials skyTrials;
+    private final @NonNull SkyTrials skyTrials;
     private @Nullable Settings settings;
 
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
-    public SettingsManager(@NotNull SkyTrials skyTrials) {
+    public SettingsManager(@NonNull SkyTrials skyTrials) {
         this.skyTrials = skyTrials;
     }
 
@@ -64,13 +64,13 @@ public class SettingsManager {
             skyTrials.saveResource("settings.yml", false);
         }
 
-        @NotNull YamlConfigurationLoader loader = ConfigurationUtility.getYamlConfigurationLoader(path);
+        YamlConfigurationLoader loader = ConfigurationUtility.getYamlConfigurationLoader(path);
         try {
             settings = loader.load().get(Settings.class);
 
             validateSettings();
         } catch (ConfigurateException e) {
-            skyTrials.getComponentLogger().warn(AdventureUtil.serialize("Failed to load the plugin's settings due to an error. Error: " + e.getMessage()));
+            skyTrials.getComponentLogger().warn(AdventureUtil.deserialize("Failed to load the plugin's settings due to an error. Error: " + e.getMessage()));
         }
     }
 
@@ -82,13 +82,13 @@ public class SettingsManager {
         ComponentLogger logger = skyTrials.getComponentLogger();
 
         if(settings.configVersion() == null) {
-            logger.warn(AdventureUtil.serialize("Your setting's config version is outdated. Either re-generate your settings file or migrate it to version 2.0.0.0."));
+            logger.warn(AdventureUtil.deserialize("Your setting's config version is outdated. Either re-generate your settings file or migrate it to version 2.0.0.0."));
             settings = null;
             return;
         }
 
         if(settings.locale() == null) {
-            logger.warn(AdventureUtil.serialize("The locale to use is invalid."));
+            logger.warn(AdventureUtil.deserialize("The locale to use is invalid."));
             settings = null;
         }
     }

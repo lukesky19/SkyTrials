@@ -20,8 +20,8 @@ package com.github.lukesky19.skytrials.data.config.entity;
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -37,11 +37,11 @@ import java.util.List;
 @ConfigSerializable
 public record EntityConfig(
         @Nullable String entityType,
-        @NotNull Options options,
-        @NotNull List<EffectConfig> effects,
-        @NotNull EquipmentConfig equipment,
-        @NotNull List<AttributeConfig> attributes,
-        @NotNull String lootTable) {
+        @NonNull Options options,
+        @NonNull List<EffectConfig> effects,
+        @NonNull EquipmentConfig equipment,
+        @NonNull List<AttributeConfig> attributes,
+        @NonNull String lootTable) {
     /**
      * Extra options to apply to the entity.
      * @param isCharged Is the entity charged? For creepers only.

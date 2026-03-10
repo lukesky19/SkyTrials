@@ -26,8 +26,8 @@ import com.github.lukesky19.skytrials.data.trial.LevelTrialData;
 import com.github.lukesky19.skytrials.trial.impl.LevelTrial;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.entity.EntityType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,13 +37,13 @@ import java.util.Random;
  * This class handles spawning of entities created by the {@link EntityBuilder}.
  */
 public class EntityManager {
-    private final @NotNull ComponentLogger logger;
+    private final @NonNull ComponentLogger logger;
 
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
-    public EntityManager(@NotNull SkyTrials skyTrials) {
+    public EntityManager(@NonNull SkyTrials skyTrials) {
         this.logger = skyTrials.getComponentLogger();
     }
 
@@ -53,7 +53,7 @@ public class EntityManager {
      * @param mobSpawnList The {@link List} of {@link LevelTrialData.MobSpawn}s.
      * @param playerCount The number of players in the trial.
      */
-    public void spawnEntity(@NotNull LevelTrial levelTrial, @NotNull List<LevelTrialData.MobSpawn> mobSpawnList, int playerCount) {
+    public void spawnEntity(@NonNull LevelTrial levelTrial, @NonNull List<LevelTrialData.MobSpawn> mobSpawnList, int playerCount) {
         if(mobSpawnList.isEmpty()) return;
         Random random = new Random();
 
@@ -79,13 +79,13 @@ public class EntityManager {
         EntityConfig entityConfig = mobSpawnConfig.entityConfig();
 
         if(entityConfig.entityType() == null) {
-            logger.warn(AdventureUtil.serialize("Unable to create Entity due to an invalid EntityType name."));
+            logger.warn(AdventureUtil.deserialize("Unable to create Entity due to an invalid EntityType name."));
             return;
         }
 
         Optional<EntityType> optionalEntityType = RegistryUtil.getEntityType(logger, entityConfig.entityType());
         if(optionalEntityType.isEmpty()) {
-            logger.warn(AdventureUtil.serialize("Unable to create SpawnerEntry due to an invalid EntityType for key " + entityConfig.entityType()));
+            logger.warn(AdventureUtil.deserialize("Unable to create SpawnerEntry due to an invalid EntityType for key " + entityConfig.entityType()));
             return;
         }
 

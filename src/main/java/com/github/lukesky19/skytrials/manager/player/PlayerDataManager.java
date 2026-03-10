@@ -3,7 +3,7 @@ package com.github.lukesky19.skytrials.manager.player;
 import com.github.lukesky19.skytrials.data.player.PlayerData;
 import com.github.lukesky19.skytrials.database.DatabaseManager;
 import com.github.lukesky19.skytrials.database.table.PlayerCooldownsTable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  * This class manages the storage, loading, and saving of {@link PlayerData}.
  */
 public class PlayerDataManager {
-    private final @NotNull DatabaseManager databaseManager;
-    private final @NotNull Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+    private final @NonNull DatabaseManager databaseManager;
+    private final @NonNull Map<UUID, PlayerData> playerDataMap = new HashMap<>();
 
     /**
      * Default Constructor.
@@ -33,7 +33,7 @@ public class PlayerDataManager {
      * Constructor
      * @param databaseManager A {@link DatabaseManager} instance.
      */
-    public PlayerDataManager(@NotNull DatabaseManager databaseManager) {
+    public PlayerDataManager(@NonNull DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
@@ -41,7 +41,7 @@ public class PlayerDataManager {
      * Get the {@link Map} mapping {@link UUID} to {@link PlayerData}.
      * @return A {@link Map} mapping {@link UUID} to {@link PlayerData}.
      */
-    public @NotNull Map<UUID, PlayerData> getPlayerDataMap() {
+    public @NonNull Map<UUID, PlayerData> getPlayerDataMap() {
         return playerDataMap;
     }
 
@@ -50,7 +50,7 @@ public class PlayerDataManager {
      * @param uuid The {@link UUID} of the player.
      * @return The {@link PlayerData} for the player.
      */
-    public @NotNull PlayerData getPlayerData(@NotNull UUID uuid) {
+    public @NonNull PlayerData getPlayerData(@NonNull UUID uuid) {
         if(playerDataMap.containsKey(uuid)) return playerDataMap.get(uuid);
 
         PlayerData playerData = new PlayerData();
@@ -80,7 +80,7 @@ public class PlayerDataManager {
      * Saves player data for the {@link UUID} provided.
      * @param uuid The {@link UUID} of the player.
      */
-    public void savePlayerData(@NotNull UUID uuid) {
+    public void savePlayerData(@NonNull UUID uuid) {
         PlayerData playerData = playerDataMap.get(uuid);
         if(playerData == null) return;
 
@@ -93,7 +93,7 @@ public class PlayerDataManager {
      * @param playerData The {@link PlayerData} to save.
      * @return A {@link CompletableFuture} that completes when all data is saved.
      */
-    public @NotNull CompletableFuture<Void> savePlayerData(@NotNull UUID uuid, @NotNull PlayerData playerData) {
+    public @NonNull CompletableFuture<Void> savePlayerData(@NonNull UUID uuid, @NonNull PlayerData playerData) {
         PlayerCooldownsTable playerCooldownsTable = databaseManager.getPlayerCooldownsTable();
 
         return playerCooldownsTable.saveCooldowns(uuid, playerData.getCooldownsMap()).thenAccept(result -> {});
@@ -103,7 +103,7 @@ public class PlayerDataManager {
      * Saves all player data to the database.
      * @return A {@link CompletableFuture} that completes when all data is saved.
      */
-    public @NotNull CompletableFuture<Void> savePlayerData() {
+    public @NonNull CompletableFuture<Void> savePlayerData() {
         List<CompletableFuture<Void>> completableFutureList = playerDataMap.entrySet().stream().map(entry -> savePlayerData(entry.getKey(), entry.getValue())).toList();
 
         return CompletableFuture.allOf(completableFutureList.toArray(new CompletableFuture[0]));
