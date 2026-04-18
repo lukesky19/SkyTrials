@@ -17,8 +17,8 @@
 */
 package com.github.lukesky19.skytrials.manager.entity;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.registry.RegistryUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.paper.api.registry.RegistryUtil;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.builder.EntityBuilder;
 import com.github.lukesky19.skytrials.data.config.entity.EntityConfig;
@@ -79,13 +79,13 @@ public class EntityManager {
         EntityConfig entityConfig = mobSpawnConfig.entityConfig();
 
         if(entityConfig.entityType() == null) {
-            logger.warn(AdventureUtil.deserialize("Unable to create Entity due to an invalid EntityType name."));
+            logger.warn(AdventureUtility.plain("Unable to create Entity due to an invalid EntityType name."));
             return;
         }
 
         Optional<EntityType> optionalEntityType = RegistryUtil.getEntityType(logger, entityConfig.entityType());
         if(optionalEntityType.isEmpty()) {
-            logger.warn(AdventureUtil.deserialize("Unable to create SpawnerEntry due to an invalid EntityType for key " + entityConfig.entityType()));
+            logger.warn(AdventureUtility.plain("Unable to create SpawnerEntry due to an invalid EntityType for key " + entityConfig.entityType()));
             return;
         }
 

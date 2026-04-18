@@ -17,10 +17,10 @@
 */
 package com.github.lukesky19.skytrials.database.table;
 
-import com.github.lukesky19.skylib.api.database.parameter.Parameter;
-import com.github.lukesky19.skylib.api.database.parameter.impl.LongParameter;
-import com.github.lukesky19.skylib.api.database.parameter.impl.StringParameter;
-import com.github.lukesky19.skylib.api.database.parameter.impl.UUIDParameter;
+import com.github.lukesky19.skylib.common.api.database.parameter.Parameter;
+import com.github.lukesky19.skylib.common.api.database.parameter.impl.LongParameter;
+import com.github.lukesky19.skylib.common.api.database.parameter.impl.StringParameter;
+import com.github.lukesky19.skylib.common.api.database.parameter.impl.UUIDParameter;
 import com.github.lukesky19.skytrials.database.QueueManager;
 import org.jspecify.annotations.NonNull;
 
@@ -67,7 +67,7 @@ public class PlayerCooldownsTable {
         String mineIdsIndexSql = "CREATE INDEX IF NOT EXISTS idx_" + tableName + "_trial_ids ON " + tableName + "(mine_id)";
         String playerIdsIndexSql = "CREATE INDEX IF NOT EXISTS idx_" + tableName + "_player_ids ON " + tableName + "(player_id)";
 
-        queueManager.queueBulkWriteTransaction(List.of(tableCreationSql, mineIdsIndexSql, playerIdsIndexSql)).thenAccept(result -> {});
+        queueManager.queueBulkWriteTransaction(List.of(tableCreationSql, mineIdsIndexSql, playerIdsIndexSql)).thenAccept(_ -> {});
     }
 
     /**

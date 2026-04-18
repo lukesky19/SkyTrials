@@ -17,7 +17,7 @@
 */
 package com.github.lukesky19.skytrials.command.arguments;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
@@ -58,13 +58,13 @@ public class StartCommand {
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.start") && ctx.getSender() instanceof Player);
 
         builder.executes(ctx -> {
-            Locale locale = localeManager.getLocale();
+            Locale locale = localeManager.getConfiguration();
             Player player = (Player) ctx.getSource().getSender();
             UUID uuid = player.getUniqueId();
 
             AbstractTrial trial = trialManager.getTrialByPlayerUUID(uuid);
             if(trial == null) {
-                player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.startTrialNotInTrial()));
+                player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.startTrialNotInTrial()));
                 return 0;
             }
 

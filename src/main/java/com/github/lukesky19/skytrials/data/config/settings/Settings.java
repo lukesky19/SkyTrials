@@ -18,15 +18,14 @@
 package com.github.lukesky19.skytrials.data.config.settings;
 
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This record contains the plugin's settings.
- * @param configVersion The config version of the file.
+ * @param version The config version of the file.
  * @param locale The locale to use. Refers to a file name in SkyTrials/locale without the file extension.
  */
 @ConfigSerializable
 public record Settings(
-        @Nullable String configVersion,
+        int version,
         @Nullable String locale) {}

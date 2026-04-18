@@ -17,17 +17,18 @@
 */
 package com.github.lukesky19.skytrials.manager.locale;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.configurate.ConfigurationUtility;
-import com.github.lukesky19.skylib.api.time.Time;
-import com.github.lukesky19.skylib.api.time.TimeUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.common.api.configuration.abstracts.SimpleConfigManager;
+import com.github.lukesky19.skylib.common.api.time.Time;
+import com.github.lukesky19.skylib.common.api.time.TimeUtil;
 import com.github.lukesky19.skylib.libs.configurate.ConfigurateException;
+import com.github.lukesky19.skylib.libs.configurate.ConfigurationNode;
+import com.github.lukesky19.skylib.libs.configurate.serialize.SerializationException;
 import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.data.config.settings.Settings;
 import com.github.lukesky19.skytrials.manager.settings.SettingsManager;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.NonNull;
@@ -40,12 +41,10 @@ import java.util.List;
 /**
  * This class manages the plugin's locale.
  */
-public class LocaleManager {
-    private final @NonNull SkyTrials skyTrials;
+public class LocaleManager extends SimpleConfigManager<Locale> {
     private final @NonNull SettingsManager settingsManager;
-    private @Nullable Locale locale;
     private final @NonNull Locale defaultLocale = new Locale(
-            "2.0.0.0",
+            3,
             "<gray>[</gray><gold>SkyTrials</gold><gray>]</gray> ",
             "<yellow>The plugin has been reloaded.</yellow>",
             List.of(
@@ -110,7 +109,7 @@ public class LocaleManager {
     public LocaleManager(
             @NonNull SkyTrials skyTrials,
             @NonNull SettingsManager settingsManager) {
-        this.skyTrials = skyTrials;
+        super(skyTrials, Locale.class);
         this.settingsManager = settingsManager;
     }
 
@@ -118,251 +117,331 @@ public class LocaleManager {
      * Get the plugin's locale or the default locale if invalid.
      * @return The plugin's locale or default locale.
      */
-    public @NonNull Locale getLocale() {
-        if(locale == null) return defaultLocale;
-        return locale;
+    @Override
+    public @NonNull Locale getConfiguration() {
+        if(configuration == null) return defaultLocale;
+        return configuration;
     }
 
-    /**
-     * Reload the plugin's locale.
-     */
-    public void reload() {
-        locale = null;
-        Settings settings = settingsManager.getSettings();
+    @Override
+    public void loadConfiguration() {
+        configuration = null;
 
-        saveDefaultLocales();
+        Settings settings = settingsManager.getConfiguration();
+        if(settings == null) {
+            logger.error(AdventureUtility.plain("Failed to load plugin's locale due to plugin settings being null."));
+            return;
+        }
+        if(settings.locale() == null) {
+            logger.error(AdventureUtility.plain("Failed to load plugin's locale to use in settings.yml is null."));
+            return;
+        }
 
-        if(settings != null) {
-            if(settings.locale() != null) {
-                Path path = Path.of(skyTrials.getDataFolder() + File.separator + "locale" + File.separator + (settings.locale() + ".yml"));
-                YamlConfigurationLoader loader = ConfigurationUtility.getYamlConfigurationLoader(path);
+        String localeString = settings.locale();
+        configurationPath = Path.of(plugin.getDirectoryFile() + File.separator + "locale" + File.separator + (localeString + ".yml"));
 
-                try {
-                    locale = loader.load().get(Locale.class);
+        YamlConfigurationLoader loader = createLoader(configurationPath);
+        try {
+            ConfigurationNode root = loader.load();
+            int version = getVersion(root);
 
-                    validateLocale();
-                } catch (ConfigurateException e) {
-                    skyTrials.getComponentLogger().warn(AdventureUtil.deserialize("Failed to load the plugin's locale and the default locale will be used. Error: " + e.getMessage()));
+            Locale locale;
+            switch(version) {
+                case 3 -> {
+                    locale = root.get(Locale.class);
+                    if(locale == null) {
+                        logger.warn(AdventureUtility.plain("Failed to load version 3 of locale configuration file " + (localeString + ".yml") + "."));
+                        return;
+                    }
+                }
+
+                case 2 -> {
+                    locale = root.get(Locale.class);
+                    if(locale == null) {
+                        logger.warn(AdventureUtility.plain("Failed to load version 2 of locale configuration file " + (localeString + ".yml") + "."));
+                        return;
+                    }
+
+                    locale = new Locale(
+                            3,
+                            locale.prefix(),
+                            locale.reload(),
+                            locale.help(),
+                            locale.joinTrial(),
+                            locale.playerJoinedTrial(),
+                            locale.trialOnCooldown(),
+                            locale.joinTrialActive(),
+                            locale.joinTrialInTrial(),
+                            locale.ready(),
+                            locale.notReady(),
+                            locale.playerIsReady(),
+                            locale.playerIsNotReady(),
+                            locale.startTrial(),
+                            locale.broadcastTrialStart(),
+                            locale.startTrialActive(),
+                            locale.startTrialNotInTrial(),
+                            locale.leaveTrial(),
+                            locale.playerLeaveTrial(),
+                            locale.leaveTrialNotInTrial(),
+                            locale.trialEnd(),
+                            locale.trialEndReload(),
+                            locale.trialEndedWhileOffline(),
+                            locale.broadcastTrialEnd(),
+                            locale.diedInTrial(),
+                            locale.playerDiedInTrial(),
+                            locale.levelUp(),
+                            locale.cooldownApplied(),
+                            locale.playerCooldownApplied(),
+                            locale.cooldownRemoved(),
+                            locale.playerCooldownRemoved(),
+                            locale.cooldownEnded(),
+                            locale.cooldownTime(),
+                            locale.playerCooldownTime(),
+                            locale.noCooldown(),
+                            locale.playerNoCooldown(),
+                            locale.timeMessage());
+
+                    saveConfiguration(locale);
+                }
+
+                case 1 -> {
+                    logger.warn(AdventureUtility.plain("Unable to load locale configuration as the locale configuration must be manually migrated for version 1."));
+                    return;
+                }
+
+                default -> {
+                    logger.warn(AdventureUtility.plain("Unable to load locale configuration as the locale configuration has an unrecognized version. Version: " + version));
+                    return;
                 }
             }
+
+            // Check if the configuration is invalid
+            if(!validateConfiguration(locale)) {
+                logger.warn(AdventureUtility.plain("Configuration validation failed for locale configuration file " + (localeString + ".yml") + ". Class name: " + this.getClass().getName()));
+                return;
+            }
+
+            this.configuration = locale;
+        } catch (ConfigurateException configurateException) {
+            logger.warn(AdventureUtility.plain("Failed to load locale configuration. Error: " + configurateException.getMessage()));
         }
     }
 
     /**
      * Validates the plugin's locale.
      */
-    private void validateLocale() {
-        if(locale == null) return;
-        ComponentLogger logger = skyTrials.getComponentLogger();
+    @Override
+    public boolean validateConfiguration(@Nullable Locale locale) {
+        if(locale == null) return false;
 
-        if(locale.configVersion() == null) {
-            logger.warn(AdventureUtil.deserialize("Your locale version is outdated. Either re-generate your locale file or migrate it to version 2.0.0.0."));
-            locale = null;
-            return;
+        if(locale.version() != 3) {
+            logger.warn(AdventureUtility.plain("Your locale version is outdated. Either re-generate your locale file or migrate it to version 3."));
+            configuration = null;
+            return false;
         }
 
         if(locale.prefix() == null) {
-            logger.warn(AdventureUtil.deserialize("The prefix message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The prefix message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.reload() == null) {
-            logger.warn(AdventureUtil.deserialize("The reload message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The reload message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.help().isEmpty()) {
-            logger.warn(AdventureUtil.deserialize("The help messages in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The help messages in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.joinTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The join trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The join trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerJoinedTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The player joined trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player joined trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.trialOnCooldown() == null) {
-            logger.warn(AdventureUtil.deserialize("The trial on cooldown message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The trial on cooldown message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.joinTrialActive() == null) {
-            logger.warn(AdventureUtil.deserialize("The join trial active message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The join trial active message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.joinTrialInTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The join trial not in trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The join trial not in trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.ready() == null) {
-            logger.warn(AdventureUtil.deserialize("The ready message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The ready message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.notReady() == null) {
-            logger.warn(AdventureUtil.deserialize("The not ready message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The not ready message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerIsReady() == null) {
-            logger.warn(AdventureUtil.deserialize("The player is ready message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player is ready message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerIsNotReady() == null) {
-            logger.warn(AdventureUtil.deserialize("The player is not ready message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player is not ready message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.startTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The start trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The start trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.broadcastTrialStart() == null) {
-            logger.warn(AdventureUtil.deserialize("The broadcast trial start message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The broadcast trial start message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.startTrialActive() == null) {
-            logger.warn(AdventureUtil.deserialize("The start trial active message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The start trial active message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.startTrialNotInTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The start trial not in trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The start trial not in trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerLeaveTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The player leave trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player leave trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.leaveTrialNotInTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The leave trial not in trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The leave trial not in trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.trialEnd() == null) {
-            logger.warn(AdventureUtil.deserialize("The trial end message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The trial end message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.trialEndReload() == null) {
-            logger.warn(AdventureUtil.deserialize("The trial end reload message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The trial end reload message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.trialEndedWhileOffline() == null) {
-            logger.warn(AdventureUtil.deserialize("The trial ended while offline message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The trial ended while offline message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.broadcastTrialEnd() == null) {
-            logger.warn(AdventureUtil.deserialize("The broadcast trial end message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The broadcast trial end message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.diedInTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The died in trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The died in trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerDiedInTrial() == null) {
-            logger.warn(AdventureUtil.deserialize("The player died in trial message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player died in trial message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.levelUp() == null) {
-            logger.warn(AdventureUtil.deserialize("The level up message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The level up message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.cooldownApplied() == null) {
-            logger.warn(AdventureUtil.deserialize("The cooldown applied message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The cooldown applied message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerCooldownApplied() == null) {
-            logger.warn(AdventureUtil.deserialize("The player cooldown applied message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player cooldown applied message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.cooldownRemoved() == null) {
-            logger.warn(AdventureUtil.deserialize("The cooldown removed message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The cooldown removed message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerCooldownRemoved() == null) {
-            logger.warn(AdventureUtil.deserialize("The player cooldown removed message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player cooldown removed message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.cooldownEnded() == null) {
-            logger.warn(AdventureUtil.deserialize("The cooldown ended message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The cooldown ended message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.cooldownTime() == null) {
-            logger.warn(AdventureUtil.deserialize("The cooldown time message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The cooldown time message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerCooldownTime() == null) {
-            logger.warn(AdventureUtil.deserialize("The player cooldown time message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player cooldown time message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.noCooldown() == null) {
-            logger.warn(AdventureUtil.deserialize("The no cooldown message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The no cooldown message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         if(locale.playerNoCooldown() == null) {
-            logger.warn(AdventureUtil.deserialize("The player no cooldown message in the locale is invalid. The default locale will be used."));
-            locale = null;
-            return;
+            logger.warn(AdventureUtility.plain("The player no cooldown message in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
 
         Locale.TimeMessage timeMessage = locale.timeMessage();
@@ -375,19 +454,33 @@ public class LocaleManager {
                 || timeMessage.minutes() == null
                 || timeMessage.seconds() == null
                 || timeMessage.suffix() == null) {
-            logger.warn(AdventureUtil.deserialize("The time placeholder config in the locale is invalid. The default locale will be used."));
-            locale = null;
+            logger.warn(AdventureUtility.plain("The time placeholder config in the locale is invalid. The default locale will be used."));
+            configuration = null;
+            return false;
         }
+
+        return true;
     }
 
     /**
      * Saves the default locales bundled with the plugin if they don't exist.
      */
-    private void saveDefaultLocales() {
-        Path path = Path.of(skyTrials.getDataFolder() + File.separator + "locale" + File.separator + "en_US.yml");
+    @Override
+    public void saveDefaultConfiguration() {
+        Path path = Path.of(plugin.getDirectoryFile() + File.separator + "locale" + File.separator + "en_US.yml");
         if(!path.toFile().exists()) {
-            skyTrials.saveResource("locale/en_US.yml", false);
+            plugin.saveResource("locale/en_US.yml", false);
         }
+    }
+
+    /**
+     * Currently no migration is needed so the locale passed is returned.
+     * @param locale The {@link Locale} to migrate.
+     * @return The passed {@link Locale} as no migration is needed.
+     */
+    @Override
+    public @NonNull Locale migrateConfiguration(@NonNull Locale locale) {
+        return locale;
     }
 
     /**
@@ -397,7 +490,7 @@ public class LocaleManager {
      */
     @NonNull
     public String getTimeMessage(long timeSeconds) {
-        Locale locale = this.getLocale();
+        Locale locale = this.getConfiguration();
         Time timeRecord = TimeUtil.millisToTime(timeSeconds * 1000L);
 
         List<TagResolver.Single> placeholders = List.of(
@@ -411,7 +504,7 @@ public class LocaleManager {
 
         StringBuilder stringBuilder = getStringBuilder(locale, timeRecord);
 
-        return AdventureUtil.serialize(AdventureUtil.deserialize(stringBuilder.toString(), placeholders));
+        return AdventureUtility.serialize(AdventureUtility.deserialize(stringBuilder.toString(), placeholders));
     }
 
     /**
@@ -487,5 +580,43 @@ public class LocaleManager {
 
         stringBuilder.append(timeMessage.suffix());
         return stringBuilder;
+    }
+
+    /**
+     * Get the version number.
+     * @param root The root {@link ConfigurationNode}.
+     * @return The config version.
+     */
+    private int getVersion(@NonNull ConfigurationNode root) {
+        ConfigurationNode versionNode = root.node("version");
+        int version = versionNode.getInt();
+
+        com.github.lukesky19.skylib.libs.configurate.ConfigurationNode legacyVersionNode = root.node("config-version");
+        String legacyVersion = legacyVersionNode.virtual() ? null : legacyVersionNode.getString();
+        if(legacyVersion != null) {
+            try {
+                switch (legacyVersion) {
+                    case "2.0.0.0" -> {
+                        versionNode.set(2);
+                        version = 2;
+                    }
+
+                    case "1.0.0" -> {
+                        versionNode.set(1);
+                        version = 1;
+                    }
+
+                    default -> {
+                        versionNode.set(0);
+                        version = 0;
+                    }
+                }
+            } catch (SerializationException e) {
+                logger.warn(AdventureUtility.plain("Failed to convert String-based version to numeric version"));
+                version = 0;
+            }
+        }
+
+        return version;
     }
 }

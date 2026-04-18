@@ -17,9 +17,9 @@
 */
 package com.github.lukesky19.skytrials.manager.trial;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.itemstack.ItemStackBuilder;
-import com.github.lukesky19.skylib.api.registry.RegistryUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.paper.api.itemstack.ItemStackBuilder;
+import com.github.lukesky19.skylib.paper.api.registry.RegistryUtil;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.misc.RegionConfig;
 import com.github.lukesky19.skytrials.data.config.trial.ChamberTrialConfig;
@@ -100,7 +100,7 @@ public class TrialDataManager {
      */
     private void createChamberTrialData(@NonNull ChamberTrialConfig config) {
         if(config.trialId() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the trial id is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the trial id is invalid."));
             return;
         }
 
@@ -121,64 +121,64 @@ public class TrialDataManager {
 
         RegionConfig regionConfig = config.region();
         if(regionConfig.worldName() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the world name in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the world name in the region config is invalid."));
             return;
         }
 
         World world = skyTrials.getServer().getWorld(regionConfig.worldName());
         if(world == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the world was not found for " + regionConfig.worldName() + " in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the world was not found for " + regionConfig.worldName() + " in the region config is invalid."));
             return;
         }
 
         if(regionConfig.regionName() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the region name in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the region name in the region config is invalid."));
             return;
         }
 
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if(regionManager == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the region manager for world " + regionConfig.worldName() + " is null."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the region manager for world " + regionConfig.worldName() + " is null."));
             return;
         }
 
         ProtectedRegion protectedRegion = regionManager.getRegion(regionConfig.regionName());
         if(protectedRegion == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the region was not found for " + regionConfig.regionName() + " in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the region was not found for " + regionConfig.regionName() + " in the region config is invalid."));
             return;
         }
 
         Location joinLocation = LocationUtil.getLocation(skyTrials, config.joinLocation());
         if(joinLocation == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the join location is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the join location is invalid."));
             return;
         }
 
         Location startLocation = LocationUtil.getLocation(skyTrials, config.startLocation());
         if(startLocation == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the start location is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the start location is invalid."));
             return;
         }
 
         Location endLocation = LocationUtil.getLocation(skyTrials, config.endLocation());
         if(endLocation == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the end location is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the end location is invalid."));
             return;
         }
 
         ChamberTrialConfig.LobbyBossBarConfig lobbyBossBarConfig = config.lobbyBossBar();
         if(lobbyBossBarConfig.bossBarText() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the lobby boss bar text is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the lobby boss bar text is invalid."));
             return;
         }
 
         if(lobbyBossBarConfig.color() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the lobby boss bar color is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the lobby boss bar color is invalid."));
             return;
         }
 
         if(lobbyBossBarConfig.overlay() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the lobby boss bar overlay is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the lobby boss bar overlay is invalid."));
             return;
         }
 
@@ -186,17 +186,17 @@ public class TrialDataManager {
 
         ChamberTrialConfig.TrialBossBarConfig trialBossBarConfig = config.trialBossBar();
         if(trialBossBarConfig.timeLimitText() == null || trialBossBarConfig.noTimeLimitText() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the trial boss bar text is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the trial boss bar text is invalid."));
             return;
         }
 
         if(trialBossBarConfig.color() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the trial boss bar color is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the trial boss bar color is invalid."));
             return;
         }
 
         if(trialBossBarConfig.overlay() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create chamber trial data as the trial boss bar overlay is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create chamber trial data as the trial boss bar overlay is invalid."));
             return;
         }
 
@@ -215,7 +215,7 @@ public class TrialDataManager {
      */
     private void createLevelTrialData(@NonNull LevelTrialConfig config) {
         if(config.trialId() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the trial id is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the trial id is invalid."));
             return;
         }
 
@@ -236,58 +236,58 @@ public class TrialDataManager {
 
         RegionConfig regionConfig = config.region();
         if(regionConfig.worldName() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the world name in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the world name in the region config is invalid."));
             return;
         }
 
         World world = skyTrials.getServer().getWorld(regionConfig.worldName());
         if(world == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the world was not found for " + regionConfig.worldName() + " in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the world was not found for " + regionConfig.worldName() + " in the region config is invalid."));
             return;
         }
 
         if(regionConfig.regionName() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the region name in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the region name in the region config is invalid."));
             return;
         }
 
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if(regionManager == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the region manager for world " + regionConfig.worldName() + " is null."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the region manager for world " + regionConfig.worldName() + " is null."));
             return;
         }
 
         ProtectedRegion protectedRegion = regionManager.getRegion(regionConfig.regionName());
         if(protectedRegion == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the region was not found for " + regionConfig.regionName() + " in the region config is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the region was not found for " + regionConfig.regionName() + " in the region config is invalid."));
             return;
         }
 
         Location joinLocation = LocationUtil.getLocation(skyTrials, config.joinLocation());
         if(joinLocation == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the join location is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the join location is invalid."));
             return;
         }
 
         Location endLocation = LocationUtil.getLocation(skyTrials, config.endLocation());
         if(endLocation == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the end location is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the end location is invalid."));
             return;
         }
 
         LevelTrialConfig.BossBarConfig lobbyBossBarConfig = config.lobbyBossBar();
         if(lobbyBossBarConfig.bossBarText() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the lobby boss bar text is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the lobby boss bar text is invalid."));
             return;
         }
 
         if(lobbyBossBarConfig.color() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the lobby boss bar color is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the lobby boss bar color is invalid."));
             return;
         }
 
         if(lobbyBossBarConfig.overlay() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the lobby boss bar overlay is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the lobby boss bar overlay is invalid."));
             return;
         }
 
@@ -295,29 +295,29 @@ public class TrialDataManager {
 
         LevelTrialConfig.BossBarConfig trialBossBarConfig = config.trialBossBar();
         if(trialBossBarConfig.bossBarText() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the trial boss bar text is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the trial boss bar text is invalid."));
             return;
         }
 
         if(trialBossBarConfig.color() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the trial boss bar color is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the trial boss bar color is invalid."));
             return;
         }
 
         if(trialBossBarConfig.overlay() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the trial boss bar overlay is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the trial boss bar overlay is invalid."));
             return;
         }
 
         LevelTrialData.BossBarData trialBossBarData = new LevelTrialData.BossBarData(trialBossBarConfig.bossBarText(), trialBossBarConfig.color(), trialBossBarConfig.overlay());
 
         if(config.clearEffectsOnTrialEnd() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the clear effects on trial end boolean is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the clear effects on trial end boolean is invalid."));
             return;
         }
 
         if(config.rewardOnTimeEnd() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the reward on time end boolean is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the reward on time end boolean is invalid."));
             return;
         }
 
@@ -348,7 +348,7 @@ public class TrialDataManager {
             LevelTrialData.LevelData levelData = createLevelData(levelConfig);
 
             if(levelData == null) {
-                logger.error(AdventureUtil.deserialize("Unable to create level trial data due to an invalid level config."));
+                logger.error(AdventureUtility.plain("Unable to create level trial data due to an invalid level config."));
                 return;
             }
 
@@ -384,22 +384,22 @@ public class TrialDataManager {
     private LevelTrialData.LevelData createLevelData(LevelTrialConfig.Level config) {
         Location startLocation = LocationUtil.getLocation(skyTrials, config.startLocation());
         if(startLocation == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the start location for a level is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the start location for a level is invalid."));
             return null;
         }
 
         if(config.removeMobsOnLevelEnd() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the remove mobs on level end boolean is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the remove mobs on level end boolean is invalid."));
             return null;
         }
 
         if(config.clearEffectsOnLevelEnd() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the clear effects on level end boolean is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the clear effects on level end boolean is invalid."));
             return null;
         }
 
         if(config.allowMilkEffectRemoval() == null) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the allow milk effect removal boolean is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the allow milk effect removal boolean is invalid."));
             return null;
         }
 
@@ -434,12 +434,12 @@ public class TrialDataManager {
         }
 
         if(config.mobSpawnStartDelay() == null  || config.mobSpawnStartDelay() < 0) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the mob spawn start delay is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the mob spawn start delay is invalid."));
             return null;
         }
 
         if(config.mobSpawnFrequencySeconds() == null || config.mobSpawnFrequencySeconds() < 0) {
-            logger.error(AdventureUtil.deserialize("Unable to create level trial data as the mob spawn frequency is invalid."));
+            logger.error(AdventureUtility.plain("Unable to create level trial data as the mob spawn frequency is invalid."));
             return null;
         }
 

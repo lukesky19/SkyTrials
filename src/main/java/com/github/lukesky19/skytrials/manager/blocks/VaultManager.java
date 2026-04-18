@@ -17,8 +17,8 @@
 */
 package com.github.lukesky19.skytrials.manager.blocks;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.itemstack.ItemStackBuilder;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.paper.api.itemstack.ItemStackBuilder;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.block.VaultConfig;
 import com.github.lukesky19.skytrials.data.config.misc.LocationConfig;
@@ -60,29 +60,29 @@ public class VaultManager {
 
         for(VaultConfig vaultConfig : vaultConfigList) {
             if(vaultConfig.location().world() == null) {
-                logger.warn(AdventureUtil.deserialize("The world name for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The world name for a vault config is invalid."));
                 continue;
             }
 
             World vaultWorld = skyTrials.getServer().getWorld(vaultConfig.location().world());
             if(vaultWorld == null) {
-                logger.warn(AdventureUtil.deserialize("A world for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("A world for a vault config is invalid."));
                 continue;
             }
 
             LocationConfig locationConfig = vaultConfig.location();
             if(locationConfig.x() == null) {
-                logger.warn(AdventureUtil.deserialize("The x coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The x coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.y() == null) {
-                logger.warn(AdventureUtil.deserialize("The y coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The y coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.z() == null) {
-                logger.warn(AdventureUtil.deserialize("The z coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The z coordinate for a vault config is invalid."));
                 continue;
             }
 
@@ -141,29 +141,29 @@ public class VaultManager {
     public void removeVaultBlocks(@NonNull List<VaultConfig> vaultConfigList) {
         for(VaultConfig vaultConfig : vaultConfigList) {
             if(vaultConfig.location().world() == null) {
-                logger.warn(AdventureUtil.deserialize("The world name for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The world name for a vault config is invalid."));
                 continue;
             }
 
             World vaultWorld = skyTrials.getServer().getWorld(vaultConfig.location().world());
             if(vaultWorld == null) {
-                logger.warn(AdventureUtil.deserialize("A world for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("A world for a vault config is invalid."));
                 continue;
             }
 
             LocationConfig locationConfig = vaultConfig.location();
             if(locationConfig.x() == null) {
-                logger.warn(AdventureUtil.deserialize("The x coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The x coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.y() == null) {
-                logger.warn(AdventureUtil.deserialize("The y coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The y coordinate for a vault config is invalid."));
                 continue;
             }
 
             if(locationConfig.z() == null) {
-                logger.warn(AdventureUtil.deserialize("The z coordinate for a vault config is invalid."));
+                logger.warn(AdventureUtility.plain("The z coordinate for a vault config is invalid."));
                 continue;
             }
 

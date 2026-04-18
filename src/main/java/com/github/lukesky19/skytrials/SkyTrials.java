@@ -17,8 +17,9 @@
 */
 package com.github.lukesky19.skytrials;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.version.VersionUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.common.api.version.VersionUtil;
+import com.github.lukesky19.skylib.paper.api.plugin.SkyPlugin;
 import com.github.lukesky19.skytrials.command.SkyTrialsCommand;
 import com.github.lukesky19.skytrials.database.ConnectionManager;
 import com.github.lukesky19.skytrials.database.DatabaseManager;
@@ -39,14 +40,13 @@ import com.github.lukesky19.skytrials.manager.trial.TrialManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 /**
  * This class is the entry point to the plugin.
  */
-public final class SkyTrials extends JavaPlugin {
+public final class SkyTrials extends SkyPlugin {
     private SettingsManager settingsManager;
     private LocaleManager localeManager;
     private TrialConfigManager trialConfigManager;
@@ -129,7 +129,7 @@ public final class SkyTrials extends JavaPlugin {
         if(trialManager != null) trialManager.clearTrials();
 
         if(playerDataManager != null && databaseManager != null) {
-            playerDataManager.savePlayerData().whenComplete((v, t) ->
+            playerDataManager.savePlayerData().whenComplete((_, _) ->
                     databaseManager.handlePluginDisable());
         }
     }
@@ -140,8 +140,8 @@ public final class SkyTrials extends JavaPlugin {
     public void reload() {
         trialManager.clearTrials();
 
-        settingsManager.reload();
-        localeManager.reload();
+        settingsManager.loadConfiguration();
+        localeManager.loadConfiguration();
         trialConfigManager.reload();
         trialDataManager.createTrialData();
         trialManager.createTrials();
@@ -157,14 +157,14 @@ public final class SkyTrials extends JavaPlugin {
         if (skyLib != null) {
             String version = skyLib.getPluginMeta().getVersion();
             String[] splitVersion = version.split("\\.");
-            int second = Integer.parseInt(splitVersion[1]);
+            int first = Integer.parseInt(splitVersion[0]);
 
-            if(second >= 5) {
+            if(first >= 2) {
                 return true;
             }
         }
 
-        this.getComponentLogger().error(AdventureUtil.deserialize("SkyLib Version 1.5.0.0 or newer is required to run this plugin."));
+        this.getComponentLogger().error(AdventureUtility.plain("SkyLib Version 2.0.0.0 or newer is required to run this plugin."));
         this.getServer().getPluginManager().disablePlugin(this);
         return false;
     }
@@ -178,8 +178,8 @@ public final class SkyTrials extends JavaPlugin {
         int minor = VersionUtil.getMinorVersion();
 
         if(major < 21 && minor < 3) {
-            this.getComponentLogger().error(AdventureUtil.deserialize("This plugin currently only supports versions 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, 1.21.9, 1.21.10, and 1.21.11."));
-            this.getComponentLogger().error(AdventureUtil.deserialize("If a new Minecraft version has released, please check my <click:OPEN_URL:https://github.com/lukesky19>GitHub</click> for updates."));
+            this.getComponentLogger().error(AdventureUtility.plain("This plugin currently only supports versions 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, 1.21.9, 1.21.10, 1.21.11, 26.1, 26.1.1, and 26.1.2."));
+            this.getComponentLogger().error(AdventureUtility.plain("If a new Minecraft version has released, please check my <click:OPEN_URL:https://github.com/lukesky19>GitHub</click> for updates."));
             this.getServer().getPluginManager().disablePlugin(this);
             return false;
         }

@@ -17,8 +17,8 @@
 */
 package com.github.lukesky19.skytrials.data.config.trial;
 
-import com.github.lukesky19.skylib.api.itemstack.ItemStackConfig;
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
+import com.github.lukesky19.skylib.paper.api.itemstack.ItemStackConfig;
 import com.github.lukesky19.skytrials.data.config.entity.EffectConfig;
 import com.github.lukesky19.skytrials.data.config.entity.EntityConfig;
 import com.github.lukesky19.skytrials.data.config.misc.LocationConfig;
@@ -28,8 +28,8 @@ import com.github.lukesky19.skytrials.trial.impl.LevelTrial;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -115,8 +115,8 @@ public record LevelTrialConfig(
     @ConfigSerializable
     public record BossBarConfig(
             @Nullable String bossBarText,
-            @Nullable BossBar.Color color,
-            @Nullable BossBar.Overlay overlay) {}
+            BossBar.@Nullable Color color,
+            BossBar.@Nullable Overlay overlay) {}
     /**
      * The {@link EntityConfig} for the mob and the {@link List} of {@link LocationConfig} that it can spawn at.
      * @param entityConfig The {@link EntityConfig}  for the mob.

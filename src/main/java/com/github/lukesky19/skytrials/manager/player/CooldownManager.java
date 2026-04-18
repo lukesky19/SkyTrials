@@ -17,7 +17,7 @@
 */
 package com.github.lukesky19.skytrials.manager.player;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.data.player.PlayerData;
@@ -112,7 +112,7 @@ public class CooldownManager {
      * Decrement all cooldowns.
      */
     public void decrementCooldowns() {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
 
         playerDataManager.getPlayerDataMap().forEach((uuid, playerData) -> {
             Map<String, Long> cooldownsMap = playerData.getCooldownsMap();
@@ -131,7 +131,7 @@ public class CooldownManager {
                     Player player = skyTrials.getServer().getPlayer(uuid);
                     if(player != null && player.isOnline() && player.isConnected()) {
                         List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("trial_id", entry.getKey()));
-                        player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.cooldownEnded(), placeholders));
+                        player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.cooldownEnded(), placeholders));
                     }
                 } else {
                     cooldownsMap.put(entry.getKey(), newCooldownTime);

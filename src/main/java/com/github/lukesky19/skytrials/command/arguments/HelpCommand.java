@@ -17,7 +17,7 @@
 */
 package com.github.lukesky19.skytrials.command.arguments;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -52,10 +52,10 @@ public class HelpCommand {
 
         builder.executes(ctx -> {
             CommandSender sender = ctx.getSource().getSender();
-            Locale locale = localeManager.getLocale();
+            Locale locale = localeManager.getConfiguration();
 
             for(String msg : locale.help()) {
-                sender.sendMessage(AdventureUtil.deserialize(msg));
+                sender.sendMessage(AdventureUtility.deserialize(msg));
             }
 
             return 1;

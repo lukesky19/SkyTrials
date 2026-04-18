@@ -17,7 +17,8 @@
 */
 package com.github.lukesky19.skytrials.trial.impl;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.paper.api.adventure.PaperAdventureUtility;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.data.trial.ChamberTrialData;
@@ -103,7 +104,7 @@ public class ChamberTrial extends AbstractTrial {
         this.trialData = trialData;
 
         // Create the initial boss bar
-        bossBar = BossBar.bossBar(AdventureUtil.deserialize(""), 1, trialData.lobbyBossBar().color(), trialData.lobbyBossBar().overlay());
+        bossBar = BossBar.bossBar(AdventureUtility.plain(""), 1, trialData.lobbyBossBar().color(), trialData.lobbyBossBar().overlay());
     }
 
     /**
@@ -113,11 +114,11 @@ public class ChamberTrial extends AbstractTrial {
      */
     @Override
     public void join(@NonNull Player player, @NonNull UUID uuid) {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
 
         // If the trial has already started, send a message to the player that they can't join a trial that has already started.
         if(status) {
-            player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.joinTrialActive()));
+            player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.joinTrialActive()));
             return;
         }
 
@@ -126,8 +127,8 @@ public class ChamberTrial extends AbstractTrial {
         if(playerCooldown != null) {
             List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("trial_id", trialData.trialId()), Placeholder.parsed("time", localeManager.getTimeMessage(playerCooldown)));
 
-            player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.trialOnCooldown(), placeholders));
-            player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.cooldownTime(), placeholders));
+            player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.trialOnCooldown(), placeholders));
+            player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.cooldownTime(), placeholders));
 
             return;
         }
@@ -140,7 +141,7 @@ public class ChamberTrial extends AbstractTrial {
 
         // Send a message that to player that they joined the trial
         List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("trial_id", trialData.trialId()), Placeholder.parsed("player_name", player.getName()));
-        player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.joinTrial(), placeholders));
+        player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.joinTrial(), placeholders));
 
         // Get and filter online players
         List<Player> onlinePlayers = ImmutableList.copyOf(skyTrials.getServer().getOnlinePlayers());
@@ -148,7 +149,7 @@ public class ChamberTrial extends AbstractTrial {
 
         // Send a message to all players except the joining player that the player joined the trial
         for(Player p : filteredOnlinePlayers) {
-            p.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.playerJoinedTrial(), placeholders));
+            p.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.playerJoinedTrial(), placeholders));
         }
     }
 
@@ -157,7 +158,7 @@ public class ChamberTrial extends AbstractTrial {
      */
     @Override
     public void start() {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
 
         // Set the trial status to true
         status = true;
@@ -171,7 +172,7 @@ public class ChamberTrial extends AbstractTrial {
 
         // Send a message to all players in the trial that the trial is starting, teleport them to the start area, and show the boss bar.
         playerStatuses.keySet().forEach(player -> {
-            player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.startTrial(), placeholders));
+            player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.startTrial(), placeholders));
 
             player.teleportAsync(trialData.startLocation());
 
@@ -184,7 +185,7 @@ public class ChamberTrial extends AbstractTrial {
 
         // Send a message to all players except the players in the trial that the trial is starting
         filteredOnlinePlayers.forEach(onlinePlayer ->
-                onlinePlayer.sendMessage(AdventureUtil.deserialize(onlinePlayer,locale.prefix() + locale.broadcastTrialStart(), placeholders)));
+                onlinePlayer.sendMessage(PaperAdventureUtility.deserialize(onlinePlayer, locale.prefix() + locale.broadcastTrialStart(), placeholders)));
 
         // Place blocks for the trial
         placeBlocks();
@@ -203,7 +204,7 @@ public class ChamberTrial extends AbstractTrial {
      */
     @Override
     public void leave(@NonNull Player player, @NonNull UUID uuid) {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
 
         // Create a list of placeholders
         List<TagResolver.Single> placeholders = new ArrayList<>();
@@ -217,7 +218,7 @@ public class ChamberTrial extends AbstractTrial {
         player.hideBossBar(bossBar);
 
         // Send a message to the player leaving the trial that they have left the trial.
-        player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.leaveTrial(), placeholders));
+        player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.leaveTrial(), placeholders));
 
         // If the trial is active, apply the cooldown if configured.
         if(status) {
@@ -229,7 +230,7 @@ public class ChamberTrial extends AbstractTrial {
                 cooldownManager.addCooldown(uuid, trialData.trialId(), trialData.cooldownSeconds());
 
                 // Send a message to the player leaving the trial that they have left the trial with their cooldown.
-                player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.cooldownApplied(), placeholders));
+                player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.cooldownApplied(), placeholders));
             }
 
             if(playerStatuses.isEmpty()) {
@@ -248,7 +249,7 @@ public class ChamberTrial extends AbstractTrial {
 
         // Send a message to all players except the leaving player that the player left the trial
         for(Player p : filteredOnlinePlayers) {
-            p.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.playerLeaveTrial(), placeholders));
+            p.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.playerLeaveTrial(), placeholders));
         }
 
         if(status) {
@@ -266,7 +267,7 @@ public class ChamberTrial extends AbstractTrial {
      */
     @Override
     public void end(@NonNull TrialEndReason trialEndReason) {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
 
         // Remove grace periods if necessary and get a list of UUIDs to apply cooldowns to if necessary
         List<UUID> playersWithGracePeriods = gracePeriodManager.removeGracePeriods(trialData.trialId());
@@ -291,8 +292,8 @@ public class ChamberTrial extends AbstractTrial {
                         cooldownManager.addCooldown(playerId, trialData.trialId(), trialData.cooldownSeconds());
 
                         // Send a trial end message and a message with the cooldown time
-                        player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.trialEnd(), placeholders));
-                        player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.cooldownApplied(), placeholders));
+                        player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.trialEnd(), placeholders));
+                        player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.cooldownApplied(), placeholders));
 
                         // Teleport the player to the end location
                         player.teleportAsync(trialData.endLocation());
@@ -303,7 +304,7 @@ public class ChamberTrial extends AbstractTrial {
                 } else {
                     playerStatuses.keySet().forEach(player -> {
                         // Send a trial end message
-                        player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.trialEnd()));
+                        player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.trialEnd()));
 
                         // Teleport the player to the end location
                         player.teleportAsync(trialData.endLocation());
@@ -315,7 +316,7 @@ public class ChamberTrial extends AbstractTrial {
 
                 List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("trial_id", trialData.trialId()));
                 for(Player player : skyTrials.getServer().getOnlinePlayers()) {
-                    player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.broadcastTrialEnd(), placeholders));
+                    player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.broadcastTrialEnd(), placeholders));
                 }
             }
 
@@ -329,7 +330,7 @@ public class ChamberTrial extends AbstractTrial {
 
                 List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("trial_id", trialData.trialId()));
                 for(Player player : skyTrials.getServer().getOnlinePlayers()) {
-                    player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.broadcastTrialEnd(), placeholders));
+                    player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.broadcastTrialEnd(), placeholders));
                 }
             }
 
@@ -341,7 +342,7 @@ public class ChamberTrial extends AbstractTrial {
 
                 playerStatuses.keySet().forEach(player -> {
                     // Send a trial end message
-                    player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.trialEnd(), placeholders));
+                    player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.trialEnd(), placeholders));
 
                     // Teleport the player to the end location
                     player.teleportAsync(trialData.endLocation());
@@ -369,11 +370,11 @@ public class ChamberTrial extends AbstractTrial {
      */
     @Override
     public void togglePlayerStatus(@NonNull Player player, @NonNull UUID uuid) {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
 
         // Send a message to the player if the trial is already started.
         if(status) {
-            player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.startTrialActive()));
+            player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.startTrialActive()));
             return;
         }
 
@@ -386,22 +387,22 @@ public class ChamberTrial extends AbstractTrial {
 
         if(playerStatus) {
             // Send a message that the player is now ready to start the trial.
-            player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.ready()));
+            player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.ready()));
 
             // Send a message to all other players in the trial that the player is ready.
             playerStatuses.keySet().stream()
-                    .filter(trialPlayer -> player.getUniqueId() != uuid)
+                    .filter(trialPlayer -> trialPlayer.getUniqueId() != uuid)
                     .forEach(trialPlayer ->
-                            trialPlayer.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.playerIsReady(), placeholders)));
+                            trialPlayer.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.playerIsReady(), placeholders)));
         } else {
             // Send a message that the player is no longer ready to start the trial.
-            player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.notReady()));
+            player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.notReady()));
 
             // Send a message to all other players in the trial that the player is not ready.
             playerStatuses.keySet().stream()
-                    .filter(trialPlayer -> player.getUniqueId() != uuid)
+                    .filter(trialPlayer -> trialPlayer.getUniqueId() != uuid)
                     .forEach(trialPlayer ->
-                            trialPlayer.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.playerIsNotReady(), placeholders)));
+                            trialPlayer.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.playerIsNotReady(), placeholders)));
         }
 
         updateBossBar();
@@ -473,7 +474,7 @@ public class ChamberTrial extends AbstractTrial {
      */
     @Override
     public void handlePlayerDeath(@NonNull PlayerDeathEvent playerDeathEvent) {
-        Locale locale = localeManager.getLocale();
+        Locale locale = localeManager.getConfiguration();
         Player player = playerDeathEvent.getPlayer();
         UUID uuid = player.getUniqueId();
 
@@ -492,11 +493,11 @@ public class ChamberTrial extends AbstractTrial {
             for(Player p : skyTrials.getServer().getOnlinePlayers()) {
                 p.sendMessage(deathMessage);
 
-                p.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.playerDiedInTrial(), placeholders));
+                p.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.playerDiedInTrial(), placeholders));
             }
         } else {
             for(Player p : skyTrials.getServer().getOnlinePlayers()) {
-                p.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.playerDiedInTrial(), placeholders));
+                p.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.playerDiedInTrial(), placeholders));
             }
         }
 
@@ -513,11 +514,11 @@ public class ChamberTrial extends AbstractTrial {
                 cooldownManager.addCooldown(uuid, trialData.trialId(), trialData.cooldownSeconds());
 
                 // Send a message to the player who died in the trial with their cooldown.
-                player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.diedInTrial(), placeholders));
-                player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.cooldownApplied(), placeholders));
+                player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.diedInTrial(), placeholders));
+                player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.cooldownApplied(), placeholders));
             } else {
                 // Send a message to the player who died in the trial
-                player.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.diedInTrial(), placeholders));
+                player.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.diedInTrial(), placeholders));
             }
 
             if(playerStatuses.isEmpty()) {
@@ -536,7 +537,7 @@ public class ChamberTrial extends AbstractTrial {
 
         // Send a message to all players except the player that died.
         for(Player p : filteredOnlinePlayers) {
-            p.sendMessage(AdventureUtil.deserialize(player,locale.prefix() + locale.playerDiedInTrial(), placeholders));
+            p.sendMessage(PaperAdventureUtility.deserialize(player,locale.prefix() + locale.playerDiedInTrial(), placeholders));
         }
 
         if(status) {
@@ -669,9 +670,9 @@ public class ChamberTrial extends AbstractTrial {
                 String timeMessage = localeManager.getTimeMessage(remainingTimeSeconds);
                 List<TagResolver.Single> placeholders = List.of(Placeholder.parsed("time", timeMessage));
 
-                bossBar.name(AdventureUtil.deserialize(trialBossBarData.timeLimitText(), placeholders));
+                bossBar.name(AdventureUtility.deserialize(trialBossBarData.timeLimitText(), placeholders));
             } else {
-                bossBar.name(AdventureUtil.deserialize(trialBossBarData.noTimeLimitText()));
+                bossBar.name(AdventureUtility.deserialize(trialBossBarData.noTimeLimitText()));
             }
         } else {
             ChamberTrialData.LobbyBossBarData lobbyBossBarData = trialData.lobbyBossBar();
@@ -681,7 +682,7 @@ public class ChamberTrial extends AbstractTrial {
                             String.valueOf(playerStatuses.entrySet().stream().filter(Map.Entry::getValue).count())),
                     Placeholder.parsed("player_count", String.valueOf(playerStatuses.size())));
 
-            bossBar.name(AdventureUtil.deserialize(lobbyBossBarData.bossBarText(), placeholders));
+            bossBar.name(AdventureUtility.deserialize(lobbyBossBarData.bossBarText(), placeholders));
         }
     }
 }

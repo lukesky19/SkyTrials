@@ -17,7 +17,7 @@
 */
 package com.github.lukesky19.skytrials.command.arguments;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.paper.api.adventure.PaperAdventureUtility;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
@@ -58,13 +58,13 @@ public class LeaveCommand {
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.leave") && ctx.getSender() instanceof Player);
 
         builder.executes(ctx -> {
-            Locale locale = localeManager.getLocale();
+            Locale locale = localeManager.getConfiguration();
             Player player = (Player) ctx.getSource().getSender();
             UUID uuid = player.getUniqueId();
 
             AbstractTrial trial = trialManager.getTrialByPlayerUUID(uuid);
             if(trial == null) {
-                player.sendMessage(AdventureUtil.deserialize(player, locale.prefix() + locale.leaveTrialNotInTrial()));
+                player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.leaveTrialNotInTrial()));
                 return 0;
             }
 

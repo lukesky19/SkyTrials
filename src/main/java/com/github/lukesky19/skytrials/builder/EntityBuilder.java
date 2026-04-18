@@ -17,9 +17,9 @@
 */
 package com.github.lukesky19.skytrials.builder;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.itemstack.ItemStackBuilder;
-import com.github.lukesky19.skylib.api.registry.RegistryUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.paper.api.itemstack.ItemStackBuilder;
+import com.github.lukesky19.skylib.paper.api.registry.RegistryUtil;
 import com.github.lukesky19.skytrials.data.config.entity.AttributeConfig;
 import com.github.lukesky19.skytrials.data.config.entity.EffectConfig;
 import com.github.lukesky19.skytrials.data.config.entity.EntityConfig;
@@ -159,23 +159,23 @@ public class EntityBuilder {
         // Apply attributes
         for(AttributeConfig attributeConfig : attributeConfigList) {
             if(attributeConfig.name() == null) {
-                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid attribute name."));
+                logger.warn(AdventureUtility.plain("Unable to apply attribute due to an invalid attribute name."));
                 continue;
             }
 
             if(attributeConfig.baseValue() == null) {
-                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid base value."));
+                logger.warn(AdventureUtility.plain("Unable to apply attribute due to an invalid base value."));
                 continue;
             }
 
             if(attributeConfig.additionalValuePerPlayer() == null) {
-                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid additional value per player."));
+                logger.warn(AdventureUtility.plain("Unable to apply attribute due to an invalid additional value per player."));
                 continue;
             }
 
             Optional<Attribute> optionalAttribute = RegistryUtil.getAttribute(logger, attributeConfig.name());
             if(optionalAttribute.isEmpty()) {
-                logger.warn(AdventureUtil.deserialize("Unable to apply attribute due to an invalid attribute for " + attributeConfig.name()));
+                logger.warn(AdventureUtility.plain("Unable to apply attribute due to an invalid attribute for " + attributeConfig.name()));
                 continue;
             }
             Attribute attribute = optionalAttribute.get();

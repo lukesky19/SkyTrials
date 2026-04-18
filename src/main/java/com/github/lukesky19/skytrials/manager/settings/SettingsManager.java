@@ -17,13 +17,14 @@
 */
 package com.github.lukesky19.skytrials.manager.settings;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.configurate.ConfigurationUtility;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.common.api.configuration.abstracts.SimpleConfigManager;
 import com.github.lukesky19.skylib.libs.configurate.ConfigurateException;
+import com.github.lukesky19.skylib.libs.configurate.ConfigurationNode;
+import com.github.lukesky19.skylib.libs.configurate.serialize.SerializationException;
 import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader;
 import com.github.lukesky19.skytrials.SkyTrials;
 import com.github.lukesky19.skytrials.data.config.settings.Settings;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -33,64 +34,147 @@ import java.nio.file.Path;
 /**
  * This class manages the plugin's settings.
  */
-public class SettingsManager {
-    private final @NonNull SkyTrials skyTrials;
-    private @Nullable Settings settings;
-
+public class SettingsManager extends SimpleConfigManager<Settings> {
     /**
      * Constructor
      * @param skyTrials A {@link SkyTrials} instance.
      */
     public SettingsManager(@NonNull SkyTrials skyTrials) {
-        this.skyTrials = skyTrials;
+        super(skyTrials, Path.of(skyTrials.getDataFolder() + File.separator + "settings.yml"), Settings.class);
+    }
+
+    @Override
+    public void loadConfiguration() {
+        configuration = null;
+        if(configurationPath == null) return;
+
+        saveDefaultConfiguration();
+
+        YamlConfigurationLoader loader = createLoader(configurationPath);
+        try {
+            ConfigurationNode root = loader.load();
+            int version = getVersion(root);
+
+            Settings settings;
+            switch(version) {
+                case 3 -> {
+                    settings = root.get(Settings.class);
+                    if(settings == null) {
+                        logger.warn(AdventureUtility.plain("Failed to load version 3 of plugin's settings configuration."));
+                        return;
+                    }
+                }
+
+                case 2 -> {
+                    settings = root.get(Settings.class);
+                    if(settings == null) {
+                        logger.warn(AdventureUtility.plain("Failed to load version 2 of plugin's settings configuration."));
+                        return;
+                    }
+
+                    settings = new Settings(
+                            3,
+                            settings.locale());
+
+                    saveConfiguration(settings);
+                }
+
+                case 1 -> {
+                    logger.warn(AdventureUtility.plain("Unable to load the plugin's settings configuration as the settings must be manually migrated for version 1."));
+                    return;
+                }
+
+                default -> {
+                    logger.warn(AdventureUtility.plain("Unable to load the plugin's settings configuration as the settings has an unrecognized version. Version: " + version));
+                    return;
+                }
+            }
+
+            // Check if the configuration is invalid
+            if(!validateConfiguration(settings)) {
+                logger.warn(AdventureUtility.plain("Configuration validation failed for plugin settings configuration"));
+                return;
+            }
+
+            this.configuration = settings;
+        } catch (ConfigurateException configurateException) {
+            logger.warn(AdventureUtility.plain("Failed to load plugin setting's configuration. Error: " + configurateException.getMessage()));
+        }
+    }
+
+    @Override
+    public void saveDefaultConfiguration() {
+        if(configurationPath == null) return;
+
+        if(!configurationPath.toFile().exists()) {
+            plugin.saveResource("settings.yml", false);
+        }
     }
 
     /**
-     * Get the plugin's {@link Settings}.
-     * @return The plugin's {@link Settings} or null.
+     * Currently no migration is needed so the settings passed is returned.
+     * @param settings The {@link Settings} to migrate.
+     * @return The passed {@link Settings} as no migration is needed.
      */
-    public @Nullable Settings getSettings() {
+    @Override
+    public @NonNull Settings migrateConfiguration(@NonNull Settings settings) {
         return settings;
     }
 
-    /**
-     * Reloads the plugin's settings.
-     */
-    public void reload() {
-        settings = null;
+    @Override
+    public boolean validateConfiguration(@Nullable Settings settings) {
+        if(settings == null) return false;
 
-        Path path = Path.of(skyTrials.getDataFolder() + File.separator + "settings.yml");
-        if(!path.toFile().exists()) {
-            skyTrials.saveResource("settings.yml", false);
-        }
-
-        YamlConfigurationLoader loader = ConfigurationUtility.getYamlConfigurationLoader(path);
-        try {
-            settings = loader.load().get(Settings.class);
-
-            validateSettings();
-        } catch (ConfigurateException e) {
-            skyTrials.getComponentLogger().warn(AdventureUtil.deserialize("Failed to load the plugin's settings due to an error. Error: " + e.getMessage()));
-        }
-    }
-
-    /**
-     * Validates the plugin's settings.
-     */
-    private void validateSettings() {
-        if(settings == null) return;
-        ComponentLogger logger = skyTrials.getComponentLogger();
-
-        if(settings.configVersion() == null) {
-            logger.warn(AdventureUtil.deserialize("Your setting's config version is outdated. Either re-generate your settings file or migrate it to version 2.0.0.0."));
-            settings = null;
-            return;
+        if(settings.version() != 3) {
+            logger.warn(AdventureUtility.plain("Your setting's config version is outdated. Either re-generate your settings file or migrate it to version 3."));
+            configuration = null;
+            return false;
         }
 
         if(settings.locale() == null) {
-            logger.warn(AdventureUtil.deserialize("The locale to use is invalid."));
-            settings = null;
+            logger.warn(AdventureUtility.plain("The locale to use is invalid."));
+            configuration = null;
+            return false;
         }
+
+        return true;
+    }
+
+    /**
+     * Get the version number.
+     * @param root The root {@link ConfigurationNode}.
+     * @return The config version.
+     */
+    private int getVersion(@NonNull ConfigurationNode root) {
+        ConfigurationNode versionNode = root.node("version");
+        int version = versionNode.getInt();
+
+        ConfigurationNode legacyVersionNode = root.node("config-version");
+        String legacyVersion = legacyVersionNode.virtual() ? null : legacyVersionNode.getString();
+        if(legacyVersion != null) {
+            try {
+                switch (legacyVersion) {
+                    case "2.0.0.0" -> {
+                        versionNode.set(2);
+                        version = 2;
+                    }
+
+                    case "1.0.0" -> {
+                        versionNode.set(1);
+                        version = 1;
+                    }
+
+                    default -> {
+                        versionNode.set(0);
+                        version = 0;
+                    }
+                }
+            } catch (SerializationException e) {
+                logger.warn(AdventureUtility.plain("Failed to convert String-based version to numeric version"));
+                version = 0;
+            }
+        }
+
+        return version;
     }
 }
-

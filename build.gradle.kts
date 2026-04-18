@@ -1,10 +1,10 @@
 plugins {
-    java
+    `java-library`
     `maven-publish`
 }
 
 group = "com.github.lukesky19"
-version = "2.1.0.0"
+version = "2.2.0.0"
 
 repositories {
     mavenCentral()
@@ -24,14 +24,19 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.16")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
-    compileOnly("com.github.lukesky19:SkyLib:1.5.0.0")
+    // Paper
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+
+    // SkyLib
+    compileOnly("com.github.lukesky19:SkyLib:2.0.0.0")
+
+    // Integration
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.2")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.16")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 tasks {
@@ -42,6 +47,11 @@ tasks {
         filesMatching("plugin.yml") {
             expand(props)
         }
+    }
+
+    // This allows usage of @apiNode in javadocs
+    javadoc {
+        (options as StandardJavadocDocletOptions).tags("apiNote:a:API Note:", "implNote:a:IMPL Note:")
     }
 
     jar {

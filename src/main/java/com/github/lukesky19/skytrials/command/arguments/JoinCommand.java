@@ -17,7 +17,7 @@
 */
 package com.github.lukesky19.skytrials.command.arguments;
 
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
 import com.github.lukesky19.skytrials.data.config.locale.Locale;
 import com.github.lukesky19.skytrials.manager.locale.LocaleManager;
 import com.github.lukesky19.skytrials.manager.trial.TrialManager;
@@ -59,7 +59,7 @@ public class JoinCommand {
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.join") && ctx.getSender() instanceof Player);
 
         builder.then(Commands.argument("trial_id", StringArgumentType.string())
-                .suggests((context, builder1) -> {
+                .suggests((_, builder1) -> {
                     for(String id : trialManager.getTrialIds()) {
                         builder1.suggest(id);
                     }
@@ -68,13 +68,13 @@ public class JoinCommand {
                 })
 
                 .executes(ctx -> {
-                    Locale locale = localeManager.getLocale();
+                    Locale locale = localeManager.getConfiguration();
                     Player player = (Player) ctx.getSource().getSender();
                     UUID uuid = player.getUniqueId();
                     String trialId = ctx.getArgument("trial_id", String.class);
 
                     if(trialManager.isPlayerInTrial(uuid)) {
-                        player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.joinTrialInTrial()));
+                        player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.joinTrialInTrial()));
                         return 0;
                     }
 

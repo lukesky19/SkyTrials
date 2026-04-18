@@ -18,8 +18,7 @@
 package com.github.lukesky19.skytrials.data.config.misc;
 
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This record contains the loot table configuration to apply to trial spawners and vault blocks.

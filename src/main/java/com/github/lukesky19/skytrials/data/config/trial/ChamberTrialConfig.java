@@ -26,8 +26,8 @@ import com.github.lukesky19.skytrials.data.trial.ChamberTrialData;
 import com.github.lukesky19.skytrials.trial.impl.ChamberTrial;
 import net.kyori.adventure.bossbar.BossBar;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -72,8 +72,8 @@ public record ChamberTrialConfig(
     public record TrialBossBarConfig(
             @Nullable String timeLimitText,
             @Nullable String noTimeLimitText,
-            @Nullable BossBar.Color color,
-            @Nullable BossBar.Overlay overlay) {}
+            BossBar.@Nullable Color color,
+            BossBar.@Nullable Overlay overlay) {}
     /**
      * The config for the boss bar shown to the player while waiting for the trial to start.
      * @param bossBarText The boss bar text to show.
@@ -83,6 +83,6 @@ public record ChamberTrialConfig(
     @ConfigSerializable
     public record LobbyBossBarConfig(
             @Nullable String bossBarText,
-            @Nullable BossBar.Color color,
-            @Nullable BossBar.Overlay overlay) {}
+            BossBar.@Nullable Color color,
+            BossBar.@Nullable Overlay overlay) {}
 }
