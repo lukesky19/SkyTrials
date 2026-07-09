@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.lukesky19"
-version = "2.2.0.0"
+version = "2.2.1.0"
 
 repositories {
     mavenCentral()
@@ -25,14 +25,18 @@ repositories {
 
 dependencies {
     // Paper
-    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 
     // SkyLib
-    compileOnly("com.github.lukesky19:SkyLib:2.0.0.0")
+    compileOnly("com.github.lukesky19:SkyLib:2.0.2.0")
 
     // Integration
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.2")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.16")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.4")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.17-SNAPSHOT") {
+        exclude(group = "com.google.code.gson")
+        exclude(group = "com.google.guava")
+        exclude(group = "org.apache.logging.log4j")
+    }
 }
 
 java {
