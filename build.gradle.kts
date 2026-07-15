@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.lukesky19"
-version = "2.2.1.0"
+version = "2.2.1.1"
 
 repositories {
     mavenCentral()
@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     // Paper
-    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+") // Due to byte code changes, do not compile against 26.2 or newer until 26.1.2 support is dropped.
 
     // SkyLib
     compileOnly("com.github.lukesky19:SkyLib:2.0.2.0")
