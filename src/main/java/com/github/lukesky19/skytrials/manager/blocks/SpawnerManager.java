@@ -24,10 +24,9 @@ import com.github.lukesky19.skytrials.builder.EntityBuilder;
 import com.github.lukesky19.skytrials.data.config.block.TrialSpawnerConfig;
 import com.github.lukesky19.skytrials.data.config.entity.EntityConfig;
 import com.github.lukesky19.skytrials.data.config.misc.LocationConfig;
+import com.github.lukesky19.skytrials.data.config.misc.LootTableConfig;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TrialSpawner;
@@ -35,11 +34,13 @@ import org.bukkit.block.spawner.SpawnRule;
 import org.bukkit.block.spawner.SpawnerEntry;
 import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.EntityType;
+import org.bukkit.loot.LootTable;
 import org.bukkit.spawner.TrialSpawnerConfiguration;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -48,6 +49,7 @@ import java.util.Optional;
 public class SpawnerManager {
     private final @NonNull SkyTrials skyTrials;
     private final @NonNull ComponentLogger logger;
+    private final @NonNull Server server;
 
     /**
      * Constructor
@@ -56,6 +58,7 @@ public class SpawnerManager {
     public SpawnerManager(@NonNull SkyTrials skyTrials) {
         this.skyTrials = skyTrials;
         this.logger = skyTrials.getComponentLogger();
+        this.server = skyTrials.getServer();
     }
 
     /**
@@ -170,7 +173,7 @@ public class SpawnerManager {
             @NonNull World spawnerWorld,
             @NonNull Location spawnerLocation,
             @NonNull TrialSpawnerConfiguration configuration,
-            TrialSpawnerConfig.SpawnerConfig spawnerConfig,
+            TrialSpawnerConfig.@NonNull SpawnerConfig spawnerConfig,
             int playerCount) {
         if(spawnerConfig.simultaneousMobs() != null) {
             configuration.setBaseSimultaneousEntities(spawnerConfig.simultaneousMobs());
@@ -201,6 +204,27 @@ public class SpawnerManager {
             if(spawnerEntry != null) {
                 configuration.addPotentialSpawn(spawnerEntry);
             }
+        }
+
+        for(LootTableConfig lootTableConfig : spawnerConfig.lootTables()) {
+            if(lootTableConfig.name() == null) {
+                logger.warn(AdventureUtility.plain("A Trial Spawner configuration has a loot table configuration with an invalid key name."));
+                continue;
+            }
+
+            NamespacedKey key = NamespacedKey.fromString(lootTableConfig.name());
+            if(key == null) {
+                logger.warn(AdventureUtility.plain("Failed to create a NamespacedKey for loot table key name " + lootTableConfig.name() + "."));
+                continue;
+            }
+
+            LootTable lootTable = server.getLootTable(key);
+            if(lootTable == null) {
+                logger.warn(AdventureUtility.plain("No loot table found for NamespacedKey " + key + "."));
+                continue;
+            }
+
+            configuration.addPossibleReward(lootTable, Objects.requireNonNullElse(lootTableConfig.weight(), 1));
         }
     }
 
