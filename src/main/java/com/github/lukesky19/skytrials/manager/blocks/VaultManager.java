@@ -28,8 +28,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Vault;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.loot.LootTable;
-import org.bukkit.loot.LootTables;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
@@ -41,6 +41,7 @@ import java.util.Optional;
 public class VaultManager {
     private final @NonNull SkyTrials skyTrials;
     private final @NonNull ComponentLogger logger;
+    private final @NonNull Server server;
 
     /**
      * Constructor
@@ -49,6 +50,7 @@ public class VaultManager {
     public VaultManager(@NonNull SkyTrials skyTrials) {
         this.skyTrials = skyTrials;
         this.logger = skyTrials.getComponentLogger();
+        this.server = skyTrials.getServer();
     }
 
     /**
@@ -56,8 +58,6 @@ public class VaultManager {
      * @param vaultConfigList A {@link List} of {@link VaultConfig}s.
      */
     public void placeVaultBlocks(@NonNull List<VaultConfig> vaultConfigList) {
-        Registry<@NonNull LootTables> lootTablesRegistry = Registry.LOOT_TABLES;
-
         for(VaultConfig vaultConfig : vaultConfigList) {
             if(vaultConfig.location().world() == null) {
                 logger.warn(AdventureUtility.plain("The world name for a vault config is invalid."));
@@ -97,19 +97,22 @@ public class VaultManager {
             BlockState state = block.getState(false);
 
             if(state instanceof Vault vaultState) {
-                if(vaultState.getBlockData() instanceof org.bukkit.block.data.type.Vault vaultBlockData) {
-                    if(vaultConfig.ominous() != null) {
+                if(vaultConfig.ominous() != null) {
+                    if(vaultConfig.ominous()) {
+                        vaultState.setKeyItem(ItemType.OMINOUS_TRIAL_KEY.createItemStack());
+                    }
+
+                    if(vaultState.getBlockData() instanceof org.bukkit.block.data.type.Vault vaultBlockData) {
                         vaultBlockData.setOminous(vaultConfig.ominous());
-                        state.update();
+                        vaultState.setBlockData(vaultBlockData);
                     }
                 }
 
                 if(vaultConfig.lootTable() != null) {
                     NamespacedKey key = NamespacedKey.fromString(vaultConfig.lootTable());
                     if(key != null) {
-                        LootTables lootTables = lootTablesRegistry.get(key);
-                        if(lootTables != null) {
-                            LootTable lootTable = lootTables.getLootTable();
+                        LootTable lootTable = server.getLootTable(key);
+                        if(lootTable != null) {
                             vaultState.setLootTable(lootTable);
                         }
                     }
@@ -129,7 +132,7 @@ public class VaultManager {
                     optionalKeyItem.ifPresent(vaultState::setKeyItem);
                 }
 
-                state.update();
+                vaultState.update();
             }
         }
     }
