@@ -1,4 +1,4 @@
-config-version: 2.0.0.0
+version: 4
 prefix: "<gray>[</gray><gold>SkyTrials</gold><gray>]</gray> "
 reload: "<yellow>The plugin has been reloaded.</yellow>"
 help:
@@ -11,7 +11,9 @@ help:
     - "<white>/</white><aqua>skytrials</aqua> <yellow>join</yellow> <red><trial_name></red>"
     - "<white>/</white><aqua>skytrials</aqua> <yellow>start</yellow>"
     - "<white>/</white><aqua>skytrials</aqua> <yellow>leave</yellow>"
-    - "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown</yellow> <red><trial_name></red>"
+    - "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown get</yellow> <red><trial_name> [player]</red>"
+    - "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown add</yellow> <red><trial_name> <player> <time></red>"
+    - "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown remove</yellow> <red><trial_name> <player></red>"
 join-trial: "<yellow>You have joined the trial <white><trial_id></white>.</yellow>"
 player-joined-trial: "<yellow>Player <white><player_name></white> has joined the trial <white><trial_id></white>.</yellow>"
 trial-on-cooldown: "<red>You cannot join trial <white><trial_id></white> because you have a cooldown.</red>"

@@ -11,24 +11,24 @@ softdepend:
 load: POSTWORLD
 
 permissions:
-  skytrials.command.skytrials:
+  skytrials.commands.skytrials:
     description: The base command permission.
     default: op
-  skytrials.command.skytrials.join:
+  skytrials.commands.skytrials.join:
     description: The permission to join a trial.
     default: op
-  skytrials.command.skytrials.start:
+  skytrials.commands.skytrials.start:
     description: The permission to start a trial.
     default: op
-  skytrials.command.skytrials.leave:
+  skytrials.commands.skytrials.leave:
     description: The permission to leave a trial.
     default: op
-  skytrials.command.skytrials.help:
+  skytrials.commands.skytrials.help:
     description: The permission to view the help message.
     default: op
-  skytrials.command.skytrials.reload:
+  skytrials.commands.skytrials.reload:
     description: The permission to reload the plugin.
     default: op
-  skytrials.command.skytrials.cooldown:
+  skytrials.commands.skytrials.cooldown:
     description: The permission to view a cooldown
     default: op

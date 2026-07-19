@@ -44,7 +44,7 @@ import java.util.List;
 public class LocaleManager extends SimpleConfigManager<Locale> {
     private final @NonNull SettingsManager settingsManager;
     private final @NonNull Locale defaultLocale = new Locale(
-            3,
+            4,
             "<gray>[</gray><gold>SkyTrials</gold><gray>]</gray> ",
             "<yellow>The plugin has been reloaded.</yellow>",
             List.of(
@@ -57,7 +57,9 @@ public class LocaleManager extends SimpleConfigManager<Locale> {
                     "<white>/</white><aqua>skytrials</aqua> <yellow>join</yellow> <red><trial_name></red>",
                     "<white>/</white><aqua>skytrials</aqua> <yellow>start</yellow>",
                     "<white>/</white><aqua>skytrials</aqua> <yellow>leave</yellow>",
-                    "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown</yellow> <red><trial_name></red>"),
+                    "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown get</yellow> <red><trial_name> [player]</red>",
+                    "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown add</yellow> <red><trial_name> <player> <time></red>",
+                    "<white>/</white><aqua>skytrials</aqua> <yellow>cooldown remove</yellow> <red><trial_name> <player></red>"),
             "<yellow>You have joined the trial <white><trial_id></white>.</yellow>",
             "<yellow>Player <white><player_name></white> has joined the trial <white><trial_id></white>.</yellow>",
             "<red>You cannot join trial <white><trial_id></white> because you have a cooldown.</red>",
@@ -147,12 +149,61 @@ public class LocaleManager extends SimpleConfigManager<Locale> {
 
             Locale locale;
             switch(version) {
+                case 4 -> {
+                    locale = root.get(Locale.class);
+                    if(locale == null) {
+                        logger.warn(AdventureUtility.plain("Failed to load version 4 of locale configuration file " + (localeString + ".yml") + "."));
+                        return;
+                    }
+                }
+
                 case 3 -> {
                     locale = root.get(Locale.class);
                     if(locale == null) {
                         logger.warn(AdventureUtility.plain("Failed to load version 3 of locale configuration file " + (localeString + ".yml") + "."));
                         return;
                     }
+
+                    locale = new Locale(
+                            4,
+                            locale.prefix(),
+                            locale.reload(),
+                            locale.help(),
+                            locale.joinTrial(),
+                            locale.playerJoinedTrial(),
+                            locale.trialOnCooldown(),
+                            locale.joinTrialActive(),
+                            locale.joinTrialInTrial(),
+                            locale.ready(),
+                            locale.notReady(),
+                            locale.playerIsReady(),
+                            locale.playerIsNotReady(),
+                            locale.startTrial(),
+                            locale.broadcastTrialStart(),
+                            locale.startTrialActive(),
+                            locale.startTrialNotInTrial(),
+                            locale.leaveTrial(),
+                            locale.playerLeaveTrial(),
+                            locale.leaveTrialNotInTrial(),
+                            locale.trialEnd(),
+                            locale.trialEndReload(),
+                            locale.trialEndedWhileOffline(),
+                            locale.broadcastTrialEnd(),
+                            locale.diedInTrial(),
+                            locale.playerDiedInTrial(),
+                            locale.levelUp(),
+                            locale.cooldownApplied(),
+                            locale.playerCooldownApplied(),
+                            locale.cooldownRemoved(),
+                            locale.playerCooldownRemoved(),
+                            locale.cooldownEnded(),
+                            locale.cooldownTime(),
+                            locale.playerCooldownTime(),
+                            locale.noCooldown(),
+                            locale.playerNoCooldown(),
+                            locale.timeMessage());
+
+                    saveConfiguration(locale);
                 }
 
                 case 2 -> {

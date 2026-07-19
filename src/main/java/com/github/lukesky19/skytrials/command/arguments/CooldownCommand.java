@@ -70,7 +70,9 @@ public class CooldownCommand {
 
         builder.requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown") && ctx.getSender() instanceof Player);
 
-        builder.then(Commands.argument("trial_id", StringArgumentType.string())
+        builder.then(Commands.literal("get")
+            .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown.get"))
+            .then(Commands.argument("trial_id", StringArgumentType.string())
                 .suggests((_, suggestionsBuilder) -> {
                     for(String id : trialManager.getTrialIds()) {
                         suggestionsBuilder.suggest(id);
@@ -78,145 +80,144 @@ public class CooldownCommand {
 
                     return suggestionsBuilder.buildFuture();
                 })
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown.get.others"))
+                    .executes(ctx -> {
+                        Locale locale = localeManager.getConfiguration();
+                        Player senderPlayer = (Player) ctx.getSource().getSender();
+                        Player targetPlayer = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
+                        UUID targetPlayerId = targetPlayer.getUniqueId();
+
+                        String trialId = ctx.getArgument("trial_id", String.class);
+
+                        List< TagResolver.Single> placeholders = new ArrayList<>();
+                        placeholders.add(Placeholder.parsed("trial_id", trialId));
+                        placeholders.add(Placeholder.parsed("player_name", targetPlayer.getName()));
+
+                        Long cooldownTime = cooldownManager.getTrialCooldown(targetPlayerId, trialId);
+                        if(cooldownTime != null) {
+                            placeholders.add(Placeholder.parsed("time", localeManager.getTimeMessage(cooldownTime)));
+
+                            senderPlayer.sendMessage(PaperAdventureUtility.deserialize(targetPlayer, locale.prefix() + locale.playerCooldownTime(), placeholders));
+                        } else {
+                            senderPlayer.sendMessage(PaperAdventureUtility.deserialize(targetPlayer, locale.prefix() + locale.playerNoCooldown(), placeholders));
+                        }
+
+                        return 1;
+                    }))
+            .executes(ctx -> {
+                Locale locale = localeManager.getConfiguration();
+                Player player = (Player) ctx.getSource().getSender();
+                UUID uuid = player.getUniqueId();
+                String trialId = ctx.getArgument("trial_id", String.class);
+
+                List< TagResolver.Single> placeholders = new ArrayList<>();
+                placeholders.add(Placeholder.parsed("trial_id", trialId));
+
+                Long cooldownTime = cooldownManager.getTrialCooldown(uuid, trialId);
+                if(cooldownTime != null) {
+                    placeholders.add(Placeholder.parsed("time", localeManager.getTimeMessage(cooldownTime)));
+
+                    player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.cooldownTime(), placeholders));
+                } else {
+                    player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.noCooldown(), placeholders));
+                }
+
+                return 1;
+            })
+        ));
+
+        builder.then(Commands.literal("add")
+            .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown.add"))
+            .then(Commands.argument("trial_id", StringArgumentType.string())
+                .suggests((_, builder1) -> {
+                    for(String id : trialManager.getTrialIds()) {
+                        builder1.suggest(id);
+                    }
+
+                    return builder1.buildFuture();
+                })
 
                 .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(Commands.argument("time", StringArgumentType.string())
                         .executes(ctx -> {
-                            Locale locale = localeManager.getConfiguration();
-                            Player senderPlayer = (Player) ctx.getSource().getSender();
-                            Player targetPlayer = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
-                            UUID targetPlayerId = targetPlayer.getUniqueId();
-
+                            Locale locale =  localeManager.getConfiguration();
+                            CommandSender sender = ctx.getSource().getSender();
+                            Player target = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
+                            UUID uuid = target.getUniqueId();
                             String trialId = ctx.getArgument("trial_id", String.class);
+                            String timeInput = ctx.getArgument("time", String.class);
+                            long cooldownMillis = TimeUtil.stringToMillis(timeInput);
+                            long cooldownSeconds = cooldownMillis / 1000;
 
-                            List< TagResolver.Single> placeholders = new ArrayList<>();
-                            placeholders.add(Placeholder.parsed("trial_id", trialId));
-                            placeholders.add(Placeholder.parsed("player_name", targetPlayer.getName()));
+                            cooldownManager.addCooldown(uuid, trialId, cooldownSeconds);
 
-                            Long cooldownTime = cooldownManager.getTrialCooldown(targetPlayerId, trialId);
-                            if(cooldownTime != null) {
-                                placeholders.add(Placeholder.parsed("time", localeManager.getTimeMessage(cooldownTime)));
+                            List<TagResolver.Single> placeholders = List.of(
+                                    Placeholder.parsed("trial_id", trialId),
+                                    Placeholder.parsed("player_name", target.getName()),
+                                    Placeholder.parsed("time", localeManager.getTimeMessage(cooldownSeconds)));
 
-                                senderPlayer.sendMessage(PaperAdventureUtility.deserialize(targetPlayer, locale.prefix() + locale.playerCooldownTime(), placeholders));
+                            target.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.cooldownApplied(), placeholders));
+
+                            if(sender instanceof Player) {
+                                sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.playerCooldownApplied(), placeholders));
                             } else {
-                                senderPlayer.sendMessage(PaperAdventureUtility.deserialize(targetPlayer, locale.prefix() + locale.playerNoCooldown(), placeholders));
+                                sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.playerCooldownApplied(), placeholders));
                             }
 
                             return 1;
-                        }))
-
-                .executes(ctx -> {
-                    Locale locale = localeManager.getConfiguration();
-                    Player player = (Player) ctx.getSource().getSender();
-                    UUID uuid = player.getUniqueId();
-                    String trialId = ctx.getArgument("trial_id", String.class);
-
-                    List< TagResolver.Single> placeholders = new ArrayList<>();
-                    placeholders.add(Placeholder.parsed("trial_id", trialId));
-
-                    Long cooldownTime = cooldownManager.getTrialCooldown(uuid, trialId);
-                    if(cooldownTime != null) {
-                        placeholders.add(Placeholder.parsed("time", localeManager.getTimeMessage(cooldownTime)));
-
-                        player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.cooldownTime(), placeholders));
-                    } else {
-                        player.sendMessage(PaperAdventureUtility.deserialize(player, locale.prefix() + locale.noCooldown(), placeholders));
-                    }
-
-                    return 1;
-                })
-        );
-
-        builder.then(Commands.literal("add")
-                .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown.add"))
-                .then(Commands.argument("trial_id", StringArgumentType.string())
-                        .suggests((_, builder1) -> {
-                            for(String id : trialManager.getTrialIds()) {
-                                builder1.suggest(id);
-                            }
-
-                            return builder1.buildFuture();
                         })
-
-                        .then(Commands.argument("player", ArgumentTypes.player())
-                                .then(Commands.argument("time", StringArgumentType.string())
-                                        .executes(ctx -> {
-                                            Locale locale =  localeManager.getConfiguration();
-                                            CommandSender sender = ctx.getSource().getSender();
-                                            Player target = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
-                                            UUID uuid = target.getUniqueId();
-                                            String trialId = ctx.getArgument("trial_id", String.class);
-                                            String timeInput = ctx.getArgument("time", String.class);
-                                            long cooldownMillis = TimeUtil.stringToMillis(timeInput);
-                                            long cooldownSeconds = cooldownMillis / 1000;
-
-                                            cooldownManager.addCooldown(uuid, trialId, cooldownSeconds);
-
-                                            List<TagResolver.Single> placeholders = List.of(
-                                                    Placeholder.parsed("trial_id", trialId),
-                                                    Placeholder.parsed("player_name", target.getName()),
-                                                    Placeholder.parsed("time", localeManager.getTimeMessage(cooldownSeconds)));
-
-                                            target.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.cooldownApplied(), placeholders));
-
-                                            if(sender instanceof Player) {
-                                                sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.playerCooldownApplied(), placeholders));
-                                            } else {
-                                                sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.playerCooldownApplied(), placeholders));
-                                            }
-
-                                            return 1;
-                                        })
-                                )
-                        )
+                    )
                 )
+            )
         );
 
         builder.then(Commands.literal("remove")
-                .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown.remove"))
-                .then(Commands.argument("trial_id", StringArgumentType.string())
-                        .suggests((_, builder1) -> {
-                            for(String id : trialManager.getTrialIds()) {
-                                builder1.suggest(id);
+            .requires(ctx -> ctx.getSender().hasPermission("skytrials.commands.skytrials.cooldown.remove"))
+            .then(Commands.argument("trial_id", StringArgumentType.string())
+                .suggests((_, builder1) -> {
+                    for(String id : trialManager.getTrialIds()) {
+                        builder1.suggest(id);
+                    }
+
+                    return builder1.buildFuture();
+                })
+
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .executes(ctx -> {
+                        Locale locale =  localeManager.getConfiguration();
+                        CommandSender sender = ctx.getSource().getSender();
+                        Player target = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
+                        UUID uuid = target.getUniqueId();
+                        String trialId = ctx.getArgument("trial_id", String.class);
+
+                        List<TagResolver.Single> placeholders = List.of(
+                                Placeholder.parsed("trial_id", trialId),
+                                Placeholder.parsed("player_name", target.getName()));
+
+                        boolean result = cooldownManager.removeCooldown(uuid, trialId);
+                        if(result) {
+                            target.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.cooldownRemoved(), placeholders));
+
+                            if(sender instanceof Player) {
+                                sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.playerCooldownRemoved(), placeholders));
+                            } else {
+                                sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.playerCooldownRemoved(), placeholders));
                             }
 
-                            return builder1.buildFuture();
-                        })
+                            return 1;
+                        } else {
+                            if(sender instanceof Player) {
+                                sender.sendMessage(AdventureUtility.deserialize(locale.prefix() + "<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
+                            } else {
+                                sender.sendMessage(AdventureUtility.deserialize("<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
+                            }
 
-                        .then(Commands.argument("player", ArgumentTypes.player())
-                                .executes(ctx -> {
-                                    Locale locale =  localeManager.getConfiguration();
-                                    CommandSender sender = ctx.getSource().getSender();
-                                    Player target = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
-                                    UUID uuid = target.getUniqueId();
-                                    String trialId = ctx.getArgument("trial_id", String.class);
-
-                                    List<TagResolver.Single> placeholders = List.of(
-                                            Placeholder.parsed("trial_id", trialId),
-                                            Placeholder.parsed("player_name", target.getName()));
-
-                                    boolean result = cooldownManager.removeCooldown(uuid, trialId);
-                                    if(result) {
-                                        target.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.cooldownRemoved(), placeholders));
-
-                                        if(sender instanceof Player) {
-                                            sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.prefix() + locale.playerCooldownRemoved(), placeholders));
-                                        } else {
-                                            sender.sendMessage(PaperAdventureUtility.deserialize(target, locale.playerCooldownRemoved(), placeholders));
-                                        }
-
-                                        return 1;
-                                    } else {
-                                        if(sender instanceof Player) {
-                                            sender.sendMessage(AdventureUtility.deserialize(locale.prefix() + "<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
-                                        } else {
-                                            sender.sendMessage(AdventureUtility.deserialize("<red>Unable to remove trial cooldown. Player data may not exist or there is no trial for that id."));
-                                        }
-
-                                        return 0;
-                                    }
-                                })
-                        )
+                            return 0;
+                        }
+                    })
                 )
+            )
         );
 
         return builder.build();
